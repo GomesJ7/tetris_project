@@ -37,14 +37,23 @@ public class Coordonnees {
         return String.format("(%d, %d)", x, y);
     }
 
-    // Vérifie si deux objets Coordonnees sont égaux
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) return false; // Si l'objet comparé est nul, ils ne sont pas égaux
-        if (this == obj) return true;  // Si c'est le même objet, ils sont égaux
-        Coordonnees other = (Coordonnees) obj; // Convertit l'objet en Coordonnees
-        return this.x == other.x && this.y == other.y; // Compare les coordonnées
+        if (obj == null) {  // Si l'objet à comparer est nul, ce n'est pas le même
+            return false;
+        }
+        if (obj == this) {  // Si l'objet est exactement le même (même référence en mémoire)
+            return true;
+        }
+        // On vérifie que l'objet est bien une instance de Coordonnees
+        if (!(obj instanceof Coordonnees)) {
+            return false;  // Si l'objet n'est pas de type Coordonnees, ce n'est pas égal
+        }
+        // Convertit l'objet en Coordonnees et compare les valeurs
+        Coordonnees other = (Coordonnees) obj; 
+        return x == other.x && y == other.y;  // Les deux objets sont égaux si x et y sont égaux
     }
+
 
     // Calcule un code de hachage simple basé sur x et y
     @Override
