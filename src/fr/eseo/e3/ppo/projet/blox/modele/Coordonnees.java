@@ -37,18 +37,18 @@ public class Coordonnees {
         return String.format("(%d, %d)", x, y);
     }
 
-    // Vérification de l'égalité entre deux objets Coordonnees
+    // Vérifie si deux objets Coordonnees sont égaux
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;  // Cas d'égalité immédiate (même référence)
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Coordonnees other = (Coordonnees) obj;
-        return this.x == other.x && this.y == other.y;
+        if (obj == null) return false; // Si l'objet comparé est nul, ils ne sont pas égaux
+        if (this == obj) return true;  // Si c'est le même objet, ils sont égaux
+        Coordonnees other = (Coordonnees) obj; // Convertit l'objet en Coordonnees
+        return this.x == other.x && this.y == other.y; // Compare les coordonnées
     }
 
-    // Calcul du hash code en fonction de x et y
+    // Calcule un code de hachage simple basé sur x et y
     @Override
     public int hashCode() {
-        return 31 * x + y;
+        return x + y; // Retourne la somme de x et y comme un simple code de hachage
     }
 }
