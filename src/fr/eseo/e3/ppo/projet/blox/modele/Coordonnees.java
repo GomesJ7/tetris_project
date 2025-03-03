@@ -2,53 +2,58 @@ package fr.eseo.e3.ppo.projet.blox.modele;
 
 public class Coordonnees {
 
-    private int x;
-    private int y;
+    private int abscisse;
+    private int ordonnee;
 
     // Constructeur pour initialiser les coordonnées
-    public Coordonnees(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Coordonnees(int abscisse, int ordonnee) {
+        this.abscisse = abscisse;
+        this.ordonnee = ordonnee;
     }
 
-    // Accesseur pour obtenir la valeur de x (abscisse)
-    public int getX() {
-        return this.x;
+    // Getters et setters pour abscisse et ordonnee
+    public int getAbscisse() {
+        return abscisse;
     }
 
-    // Modificateur pour définir la valeur de x
-    public void setX(int x) {
-        this.x = x;
+    public void setAbscisse(int abscisse) {
+        this.abscisse = abscisse;
     }
 
-    // Accesseur pour obtenir la valeur de y (ordonnée)
-    public int getY() {
-        return this.y;
+    public int getOrdonnee() {
+        return ordonnee;
     }
 
-    // Modificateur pour définir la valeur de y
-    public void setY(int y) {
-        this.y = y;
+    public void setOrdonnee(int ordonnee) {
+        this.ordonnee = ordonnee;
     }
 
-    // Redéfinition de toString pour une représentation sous forme de chaîne
+    // Retourne une chaîne sous la forme "(abscisse, ordonnee)"
     @Override
     public String toString() {
-        return String.format("(%d, %d)", x, y);
+        return "(" + abscisse + ", " + ordonnee + ")"; // Espaces après la virgule
     }
 
-    // Vérification de l'égalité entre deux objets Coordonnees
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;  // Cas d'égalité immédiate (même référence)
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Coordonnees other = (Coordonnees) obj;
-        return this.x == other.x && this.y == other.y;
+        if (obj == null) {  // Si l'objet à comparer est nul, ce n'est pas le même
+            return false;
+        }
+        if (obj == this) {  // Si l'objet est exactement le même (même référence en mémoire)
+            return true;
+        }
+        // On vérifie que l'objet est bien une instance de Coordonnees
+        if (!(obj instanceof Coordonnees)) {
+            return false;  // Si l'objet n'est pas de type Coordonnees, ce n'est pas égal
+        }
+        // Convertit l'objet en Coordonnees et compare les valeurs
+        Coordonnees other = (Coordonnees) obj; 
+        return abscisse == other.abscisse && ordonnee == other.ordonnee;  // Les deux objets sont égaux si abscisse et ordonnee sont égaux
     }
 
-    // Calcul du hash code en fonction de x et y
+    // Calcule un code de hachage simple basé sur abscisse et ordonnee
     @Override
     public int hashCode() {
-        return 31 * x + y;
-    }
+        return 31 * abscisse + ordonnee; // Retourne la somme de abscisse et ordonnee comme un simple code de hachage
+    }	//on utilise 31 comme facteur multiplicatif pour éviter que les code de hash soit les mêmes par exemple pour (1,4) et (4,1)
 }
