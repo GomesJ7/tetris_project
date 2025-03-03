@@ -54,6 +54,6 @@ public class Coordonnees {
     // Calcule un code de hachage simple basé sur abscisse et ordonnee
     @Override
     public int hashCode() {
-        return abscisse + ordonnee; // Retourne la somme de abscisse et ordonnee comme un simple code de hachage
-    }
+        return 31 * abscisse + ordonnee; // Retourne la somme de abscisse et ordonnee comme un simple code de hachage
+    }	//on utilise 31 comme facteur multiplicatif pour éviter que les code de hash soit les mêmes par exemple pour (1,4) et (4,1)
 }
