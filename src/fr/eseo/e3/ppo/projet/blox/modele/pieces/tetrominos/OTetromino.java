@@ -2,19 +2,19 @@ package fr.eseo.e3.ppo.projet.blox.modele.pieces.tetrominos;
 
 import fr.eseo.e3.ppo.projet.blox.modele.Coordonnees;
 import fr.eseo.e3.ppo.projet.blox.modele.Couleur;
-//import fr.eseo.e3.ppo.projet.blox.modele.Element;
+import fr.eseo.e3.ppo.projet.blox.modele.Element;
 
 public class OTetromino {
 
-    private Element[] elements;
+    private final Element[] elements;  // Utilisation de final pour garantir que le tableau ne peut pas être réassigné
 
     // Constructeur
-    public OTetromino(Coordonnees coordonnees, Couleur couleur) {
+    public OTetromino(final Coordonnees coordonnees, final Couleur couleur) {
         setElements(coordonnees, couleur);  // Remplir le tableau d'éléments
     }
 
     // Remplir le tableau d'éléments
-    protected void setElements(Coordonnees coordonnees, Couleur couleur) {
+    protected void setElements(final Coordonnees coordonnees, final Couleur couleur) {
         elements = new Element[4];
 
         // Premier élément (élément de référence)
