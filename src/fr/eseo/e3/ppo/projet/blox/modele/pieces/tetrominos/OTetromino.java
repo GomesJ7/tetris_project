@@ -10,13 +10,12 @@ public class OTetromino {
 
     // Constructeur
     public OTetromino(final Coordonnees coordonnees, final Couleur couleur) {
+        this.elements = new Element[4];  // Initialisation du tableau d'éléments ici, avant de le remplir
         setElements(coordonnees, couleur);  // Remplir le tableau d'éléments
     }
 
     // Remplir le tableau d'éléments
     protected void setElements(final Coordonnees coordonnees, final Couleur couleur) {
-        elements = new Element[4];
-
         // Premier élément (élément de référence)
         elements[0] = new Element(coordonnees, couleur);
 
