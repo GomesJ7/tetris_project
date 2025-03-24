@@ -1,4 +1,4 @@
-package fr.eseo.e3.ppo.projet.blox.modele.pieces;
+package fr.eseo.e3.poo.projet.blox.modele.pieces;
 
 import fr.eseo.e3.ppo.projet.blox.modele.Element;
 

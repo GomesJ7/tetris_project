@@ -81,4 +81,9 @@ public class Element {
         // Retourne le code de hachage final.
         return result;
     }
+
+	public void setCoordonnes(Coordonnees coordonnees2) {
+		// TODO Auto-generated method stub
+		
+	}
 }
