@@ -1,5 +1,8 @@
 package fr.eseo.e3.ppo.projet.blox.modele.pieces.tetrominos;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
 import fr.eseo.e3.ppo.projet.blox.modele.Coordonnees;
 import fr.eseo.e3.ppo.projet.blox.modele.Couleur;
@@ -35,10 +38,11 @@ public abstract class Tetromino implements Piece {
 	}
 	
 	public String toString() {
-        StringBuilder sb = new StringBuilder(this.getClass().getSimpleName() + " :\n");
-        for (Element e : elements) {
-            sb.append("\t").append(e.toString()).append("\n");
-        }
-        return sb.toString();
-    }
+	    return getClass().getSimpleName() + " :\n" +
+	        Arrays.stream(elements)
+	              .map(e -> "\t" + e.toString())
+	              .collect(Collectors.joining("\n")) + "\n";
+	}
+
+
 }

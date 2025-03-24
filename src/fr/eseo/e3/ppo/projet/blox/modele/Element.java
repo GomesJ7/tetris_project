@@ -46,8 +46,7 @@ public class Element {
     // Méthode pour afficher l'élément sous forme de chaîne de caractères, incluant ses coordonnées et sa couleur.
     @Override
     public String toString() {
-        // La chaîne retournée inclut les coordonnées de l'élément et son nom de couleur.
-        return "(" + coordonnees.getAbscisse() + "," + coordonnees.getOrdonnee() + ") - " + couleur.name();
+        return "(" + coordonnees.getAbscisse() + ", " + coordonnees.getOrdonnee() + ") - " + couleur;
     }
 
     // Méthode pour vérifier si deux éléments sont égaux, en comparant leurs coordonnées et leurs couleurs.
