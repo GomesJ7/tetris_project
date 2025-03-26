@@ -5,10 +5,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
-import fr.eseo.e3.poo.projet.blox.modele.pieces.Puits;
-import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.OTetromino;
-import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.ITetromino;
+import fr.eseo.e3.ppo.projet.blox.modele.pieces.Piece;
+import fr.eseo.e3.ppo.projet.blox.modele.pieces.Puits;
+import fr.eseo.e3.ppo.projet.blox.modele.pieces.tetrominos.OTetromino;
+import fr.eseo.e3.ppo.projet.blox.modele.pieces.tetrominos.ITetromino;
 
 class PuitsTest {
 
@@ -84,9 +84,9 @@ class PuitsTest {
     void testSetPieceSuivanteSansPrecedente() {
         // Au départ, pieceActuelle et pieceSuivante sont null
         assertNull(puitsDefaut.getPieceActuelle(),
-            "La pieceActuelle devrait être null avant toute initialisation.");
+            "La piece Actuelle devrait être null avant toute initialisation.");
         assertNull(puitsDefaut.getPieceSuivante(),
-            "La pieceSuivante devrait être null avant toute initialisation.");
+            "La piece Suivante devrait être null avant toute initialisation.");
 
         // On définit une OTetromino en tant que nouvelle pièce suivante
         Piece pieceO = new OTetromino(); 
@@ -97,7 +97,7 @@ class PuitsTest {
             "La pièce suivante n'a pas été correctement définie.");
         // pieceActuelle doit toujours être null après le premier appel
         assertNull(puitsDefaut.getPieceActuelle(),
-            "La pieceActuelle ne doit pas être modifiée lors du premier appel.");
+            "La piece Actuelle ne doit pas être modifiée lors du premier appel.");
     }
 
     // Test setPieceSuivante() quand une pieceSuivante existait déjà
@@ -113,21 +113,21 @@ class PuitsTest {
 
         // Vérification : pieceActuelle doit être la précédente pieceSuivante (pieceO)
         assertEquals(pieceO, puitsDefaut.getPieceActuelle(),
-            "La pieceActuelle devrait être l'ancienne pièceSuivante.");
+            "La piece Actuelle devrait être l'ancienne pièce Suivante.");
 
         // Vérification : pieceSuivante doit être pieceI
         assertEquals(pieceI, puitsDefaut.getPieceSuivante(),
-            "La nouvelle pièceSuivante devrait être pieceI.");
+            "La nouvelle pièce Suivante devrait être pieceI.");
 
         // Vérification de la position de la pieceActuelle (coordonnées (largeur/2, -4))
         // On suppose que la classe Puits définit pieceActuelle.setPosition(largeur/2, -4)
         // On teste ici le premier élément de la pièce (si c'est un OTetromino, par exemple)
         assertEquals(puitsDefaut.getLargeur() / 2,
             pieceO.getElements()[0].getCoordonnees().getAbscisse(),
-            "Coordonnée X de la pieceActuelle incorrecte.");
+            "Coordonnée X de la piece Actuelle incorrecte.");
         assertEquals(-4,
             pieceO.getElements()[0].getCoordonnees().getOrdonnee(),
-            "Coordonnée Y de la pieceActuelle incorrecte.");
+            "Coordonnée Y de la piece Actuelle incorrecte.");
     }
 
     // Test simple de la méthode estPlein() (facultatif selon l'énoncé)
