@@ -1,4 +1,4 @@
-package fr.eseo.e3.ppo.projet.blox.modele.pieces;
+package fr.eseo.e3.ppo.projet.blox.modele;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -6,23 +6,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import fr.eseo.e3.ppo.projet.blox.modele.pieces.Piece;
-import fr.eseo.e3.ppo.projet.blox.modele.pieces.Puits;
-import fr.eseo.e3.ppo.projet.blox.modele.pieces.tetrominos.OTetromino;
 import fr.eseo.e3.ppo.projet.blox.modele.pieces.tetrominos.ITetromino;
+import fr.eseo.e3.ppo.projet.blox.modele.pieces.tetrominos.OTetromino;
 
 class PuitsTest {
 
-    private Puits puitsDefaut;  // Puits créé avec le constructeur par défaut
-    private Puits puitsPerso;   // Puits créé avec des dimensions personnalisées
+    private Puits puitsDefaut; // Puits créé avec le constructeur par défaut
+    private Puits puitsPerso;  // Puits créé avec des dimensions personnalisées
 
     @BeforeEach
     void setUp() {
-        // Initialisation avant chaque test
         // Le constructeur par défaut doit utiliser LARGEUR_PAR_DEFAUT et PROFONDEUR_PAR_DEFAUT
         puitsDefaut = new Puits();
 
         // Constructeur avec des dimensions valides (ex: largeur=12, profondeur=20)
-        // qui respectent les bornes [5..15] et [15..25]
+        // qui respectent [5..15] et [15..25]
         puitsPerso = new Puits(12, 20);
     }
 
@@ -64,19 +62,22 @@ class PuitsTest {
         // Largeur < 5
         assertThrows(IllegalArgumentException.class, () -> {
             new Puits(4, 20);
-        });
+        }, "Une largeur < 5 doit lever IllegalArgumentException.");
+
         // Largeur > 15
         assertThrows(IllegalArgumentException.class, () -> {
             new Puits(16, 20);
-        });
+        }, "Une largeur > 15 doit lever IllegalArgumentException.");
+
         // Profondeur < 15
         assertThrows(IllegalArgumentException.class, () -> {
             new Puits(10, 14);
-        });
+        }, "Une profondeur < 15 doit lever IllegalArgumentException.");
+
         // Profondeur > 25
         assertThrows(IllegalArgumentException.class, () -> {
             new Puits(10, 26);
-        });
+        }, "Une profondeur > 25 doit lever IllegalArgumentException.");
     }
 
     // Test setPieceSuivante() quand aucune pieceSuivante n'existe encore
@@ -88,8 +89,9 @@ class PuitsTest {
         assertNull(puitsDefaut.getPieceSuivante(),
             "La piece Suivante devrait être null avant toute initialisation.");
 
-        // On définit une OTetromino en tant que nouvelle pièce suivante
-        Piece pieceO = new OTetromino(); 
+        // On définit un OTetromino en tant que nouvelle pièce suivante
+        // (Adapter si votre constructeur exige Couleur et Coordonnees)
+        Piece pieceO = new OTetromino(new Coordonnees(0, 0), Couleur.ROUGE); 
         puitsDefaut.setPieceSuivante(pieceO);
 
         // Vérification : pieceSuivante est maintenant pieceO
@@ -104,11 +106,11 @@ class PuitsTest {
     @Test
     void testSetPieceSuivanteAvecPrecedente() {
         // Première pièce suivante
-        Piece pieceO = new OTetromino();
+        Piece pieceO = new OTetromino(new Coordonnees(0, 0), Couleur.ROUGE);
         puitsDefaut.setPieceSuivante(pieceO);
 
         // Deuxième pièce suivante
-        Piece pieceI = new ITetromino();
+        Piece pieceI = new ITetromino(new Coordonnees(5, 5), Couleur.ORANGE);
         puitsDefaut.setPieceSuivante(pieceI);
 
         // Vérification : pieceActuelle doit être la précédente pieceSuivante (pieceO)
@@ -120,12 +122,14 @@ class PuitsTest {
             "La nouvelle pièce Suivante devrait être pieceI.");
 
         // Vérification de la position de la pieceActuelle (coordonnées (largeur/2, -4))
-        // On suppose que la classe Puits définit pieceActuelle.setPosition(largeur/2, -4)
-        // On teste ici le premier élément de la pièce (si c'est un OTetromino, par exemple)
-        assertEquals(puitsDefaut.getLargeur() / 2,
+        // On teste le premier élément de la pièce
+        int expectedX = puitsDefaut.getLargeur() / 2;
+        int expectedY = -4;
+
+        assertEquals(expectedX,
             pieceO.getElements()[0].getCoordonnees().getAbscisse(),
             "Coordonnée X de la piece Actuelle incorrecte.");
-        assertEquals(-4,
+        assertEquals(expectedY,
             pieceO.getElements()[0].getCoordonnees().getOrdonnee(),
             "Coordonnée Y de la piece Actuelle incorrecte.");
     }
@@ -137,10 +141,32 @@ class PuitsTest {
         assertFalse(puitsDefaut.estPlein(),
             "Un puits vide ne devrait pas être plein.");
 
-        // Remplir artificiellement la première ligne (exemple minimal)
-        // On ne montre pas tout le code ici, mais tu peux ajouter des Element
-        // sur la ligne 0 pour simuler le fait que le puits est plein
+        // Ex. minimal : remplir artificiellement la ligne 0 du puits (si vous souhaitez tester)
         // ...
-        // assertTrue(...) ensuite
+        // for (int col = 0; col < puitsDefaut.getLargeur(); col++) {
+        //     // Simuler un Element dans la première ligne
+        //     // (vous pouvez créer un Element avec Coordonnees(col,0) + Couleur.ROUGE par ex.)
+        // }
+
+        // assertTrue(puitsDefaut.estPlein(), "Après remplissage, le puits devrait être plein.");
+    }
+
+    // Test de toString() pour vérifier le format
+    @Test
+    void testToString() {
+        String str = puitsDefaut.toString();
+
+        // On attend au minimum :
+        // "Puits : Dimension 10 x 15"
+        // "Piece Actuelle : <aucune>"
+        // "Piece Suivante : <aucune>"
+        // On peut vérifier avec contains() ou un equals() sur plusieurs lignes
+
+        assertTrue(str.contains("Puits : Dimension 10 x 15"),
+            "La première ligne doit indiquer la dimension du puits.");
+        assertTrue(str.contains("Piece Actuelle : <aucune>"),
+            "La pièce actuelle devrait être <aucune> avant initialisation.");
+        assertTrue(str.contains("Piece Suivante : <aucune>"),
+            "La pièce suivante devrait être <aucune> avant initialisation.");
     }
 }

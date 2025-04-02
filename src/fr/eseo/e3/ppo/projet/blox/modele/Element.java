@@ -1,84 +1,99 @@
 package fr.eseo.e3.ppo.projet.blox.modele;
 
+// Déclaration de la classe Element
 public class Element {
-    // Attribut pour stocker les coordonnées de l'élément.
-    private final Coordonnees coordonnees;  
 
-    // Attribut pour stocker la couleur de l'élément.
-    private final Couleur couleur;  
+    // Attribut privé pour stocker les coordonnées de l'élément
+    private Coordonnees coordonnees;
+    // Attribut privé pour stocker la couleur de l'élément
+    private Couleur couleur;
 
-    // Constructeur pour initialiser un élément avec des coordonnées et une couleur spécifiques
+    // Constructeur qui initialise un Element avec des coordonnées et une couleur spécifiques
     public Element(Coordonnees coordonnees, Couleur couleur) {
-        // Vérification pour s'assurer que ni les coordonnées ni la couleur ne sont nulles.
+        // Vérifie que les coordonnées et la couleur ne sont pas nulles
         if (coordonnees == null || couleur == null) {
-            // Si l'une des valeurs est nulle, une exception est lancée pour éviter des erreurs de logique.
-            throw new IllegalArgumentException("Les coordonnées et la couleur ne peuvent pas être null");
+            throw new IllegalArgumentException("Les coordonnées et la couleur ne peuvent pas être nulles.");
         }
-        // Initialisation des variables d'instance avec les valeurs passées en paramètres.
+        // Affecte les coordonnées fournies à l'attribut coordonnees
         this.coordonnees = coordonnees;
+        // Affecte la couleur fournie à l'attribut couleur
         this.couleur = couleur;
     }
 
-    // Constructeur qui initialise l'élément avec des coordonnées (x, y) et une couleur donnée.
+    // Constructeur qui initialise un Element en fournissant x, y et une couleur
     public Element(int x, int y, Couleur couleur) {
-        // Utilisation du constructeur de la classe Coordonnees pour créer l'objet coordonnees avec les valeurs x et y.
-        this.coordonnees = new Coordonnees(x, y);
-        // Initialisation de la couleur de l'élément.
+        // Crée un objet Coordonnees avec x et y et appelle le constructeur principal
+        this(new Coordonnees(x, y), couleur);
+    }
+
+    // Constructeur qui initialise un Element avec des coordonnées et utilise la première couleur de l'énumération par défaut
+    public Element(Coordonnees coordonnees) {
+        // Utilise la première valeur de l'énumération Couleur comme couleur par défaut
+        this(coordonnees, Couleur.values()[0]);
+    }
+
+    // Constructeur qui initialise un Element avec x et y et utilise la première couleur par défaut
+    public Element(int x, int y) {
+        // Crée un objet Coordonnees avec x et y et utilise la première couleur par défaut
+        this(new Coordonnees(x, y), Couleur.values()[0]);
+    }
+
+    // Accesseur pour obtenir les coordonnées de l'élément
+    public Coordonnees getCoordonnees() {
+        return this.coordonnees;
+    }
+
+    // Mutateur pour modifier les coordonnées de l'élément
+    public void setCoordonnees(Coordonnees coordonnees) {
+        // Vérifie que les coordonnées ne sont pas nulles
+        if (coordonnees == null) {
+            throw new IllegalArgumentException("Les coordonnées ne peuvent pas être nulles.");
+        }
+        this.coordonnees = coordonnees;
+    }
+
+    // Accesseur pour obtenir la couleur de l'élément
+    public Couleur getCouleur() {
+        return this.couleur;
+    }
+
+    // Mutateur pour modifier la couleur de l'élément
+    public void setCouleur(Couleur couleur) {
+        // Vérifie que la couleur ne soit pas nulle
+        if (couleur == null) {
+            throw new IllegalArgumentException("La couleur ne peut pas être nulle.");
+        }
         this.couleur = couleur;
     }
 
-    // Constructeur qui initialise l'élément avec des coordonnées et attribue une couleur par défaut si aucune n'est donnée.
-    public Element(Coordonnees coordonnees) {
-        // Appel au constructeur précédent, mais avec la première couleur de l'énumération comme couleur par défaut.
-        this(coordonnees, Couleur.values()[0]);  // Utilisation de la première couleur de l'énumération si aucune couleur n'est spécifiée.
-    }
-
-    // Getter pour obtenir les coordonnées de l'élément.
-    public Coordonnees getCoordonnees() {
-        return this.coordonnees;  // Retourne l'objet Coordonnees de l'élément.
-    }
-
-    // Getter pour obtenir la couleur de l'élément.
-    public Couleur getCouleur() {
-        return this.couleur;  // Retourne la couleur de l'élément.
-    }
-
-    // Méthode pour afficher l'élément sous forme de chaîne de caractères, incluant ses coordonnées et sa couleur.
+    // Redéfinition de la méthode toString() pour retourner une chaîne formatée
     @Override
     public String toString() {
-        // La chaîne retournée inclut les coordonnées de l'élément et son nom de couleur.
-        return "(" + coordonnees.getAbscisse() + "," + coordonnees.getOrdonnee() + ") - " + couleur.name();
+        // Construit et retourne une chaîne sous la forme "(abscisse, ordonnee) - COULEUR"
+        return "(" + this.coordonnees.getAbscisse() + ", " + this.coordonnees.getOrdonnee() + ") - " + this.couleur.name();
     }
 
-    // Méthode pour vérifier si deux éléments sont égaux, en comparant leurs coordonnées et leurs couleurs.
+    // Redéfinition de la méthode equals() pour comparer deux Element sur la base de leurs coordonnées et couleur
     @Override
     public boolean equals(Object obj) {
-        // Si l'objet comparé est le même, on retourne directement true (optimisation).
+        // Vérifie si l'objet comparé est le même (même référence)
         if (this == obj) return true;
-
-        // Si l'objet comparé est nul ou de type différent, on retourne false.
+        // Vérifie si l'objet est null ou de classe différente
         if (obj == null || getClass() != obj.getClass()) return false;
-
-        // Cast de l'objet comparé en un Element.
-        Element element = (Element) obj;
-
-        // On vérifie si les coordonnées et la couleur des deux éléments sont égales.
-        return coordonnees.equals(element.coordonnees) && couleur == element.couleur;
+        // Convertit l'objet en Element
+        Element other = (Element) obj;
+        // Compare les coordonnées et la couleur pour déterminer l'égalité
+        return this.coordonnees.equals(other.coordonnees) && this.couleur == other.couleur;
     }
 
-    // Méthode pour générer un code de hachage basé sur les coordonnées et la couleur de l'élément.
+    // Redéfinition de la méthode hashCode() pour calculer un code de hachage cohérent avec equals()
     @Override
     public int hashCode() {
-        // Initialisation d'un code de hachage avec une valeur arbitraire (17 est souvent utilisée comme valeur de départ).
-        int result = 17;
-
-        // Calcul du code de hachage en multipliant le résultat actuel par 31 et en ajoutant le code de hachage de coordonnees.
-        result = 31 * result + coordonnees.hashCode();
-
-        // On répète le calcul pour la couleur.
-        result = 31 * result + couleur.hashCode();
-
-        // Retourne le code de hachage final.
-        return result;
+        int result = 17; // Valeur de départ arbitraire
+        // Intègre le hashCode des coordonnées en utilisant 31 comme multiplicateur
+        result = 31 * result + this.coordonnees.hashCode();
+        // Intègre le hashCode de la couleur en utilisant 31 comme multiplicateur
+        result = 31 * result + this.couleur.hashCode();
+        return result; // Retourne le code de hachage final
     }
 }
