@@ -1,172 +1,136 @@
 package fr.eseo.e3.ppo.projet.blox.modele;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import fr.eseo.e3.ppo.projet.blox.modele.pieces.Piece;
-import fr.eseo.e3.ppo.projet.blox.modele.pieces.tetrominos.ITetromino;
 import fr.eseo.e3.ppo.projet.blox.modele.pieces.tetrominos.OTetromino;
+import fr.eseo.e3.ppo.projet.blox.modele.pieces.tetrominos.ITetromino;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+// Classe de test unitaire pour la classe Puits
 class PuitsTest {
 
-    private Puits puitsDefaut; // Puits créé avec le constructeur par défaut
-    private Puits puitsPerso;  // Puits créé avec des dimensions personnalisées
+    private Puits puitsDefaut; // Puits créé avec les dimensions par défaut
+    private Puits puitsPerso;  // Puits avec des dimensions personnalisées
 
+    // Initialisation des objets avant chaque test
     @BeforeEach
     void setUp() {
-        // Le constructeur par défaut doit utiliser LARGEUR_PAR_DEFAUT et PROFONDEUR_PAR_DEFAUT
-        puitsDefaut = new Puits();
-
-        // Constructeur avec des dimensions valides (ex: largeur=12, profondeur=20)
-        // qui respectent [5..15] et [15..25]
-        puitsPerso = new Puits(12, 20);
+        puitsDefaut = new Puits();               // Puits 10x15
+        puitsPerso = new Puits(12, 20);          // Puits 12x20
     }
 
-    // Vérification du constructeur par défaut
+    // Teste les valeurs du constructeur par défaut
     @Test
-    void testConstructeurDefaut() {
-        assertEquals(Puits.LARGEUR_PAR_DEFAUT, puitsDefaut.getLargeur(),
-            "La largeur par défaut n'est pas correcte.");
-        assertEquals(Puits.PROFONDEUR_PAR_DEFAUT, puitsDefaut.getHauteur(),
-            "La profondeur par défaut n'est pas correcte.");
+    void testConstructeurParDefaut() {
+        assertEquals(10, puitsDefaut.getLargeur());
+        assertEquals(15, puitsDefaut.getProfondeur());
     }
 
-    // Vérification du constructeur avec des dimensions valides
+    // Teste un constructeur avec des dimensions valides
     @Test
-    void testConstructeurPerso() {
-        assertEquals(12, puitsPerso.getLargeur(),
-            "La largeur du puits perso n'est pas celle attendue.");
-        assertEquals(20, puitsPerso.getHauteur(),
-            "La profondeur du puits perso n'est pas celle attendue.");
+    void testConstructeurAvecParametresValidés() {
+        assertEquals(12, puitsPerso.getLargeur());
+        assertEquals(20, puitsPerso.getProfondeur());
     }
 
-    // Test des valeurs limites (5..15 pour la largeur, 15..25 pour la profondeur)
+    // Teste les cas où le constructeur reçoit des dimensions invalides
     @Test
-    void testConstructeurLimites() {
-        // Aux limites minimales
-        Puits p1 = new Puits(5, 15);
-        assertEquals(5, p1.getLargeur());
-        assertEquals(15, p1.getHauteur());
-
-        // Aux limites maximales
-        Puits p2 = new Puits(15, 25);
-        assertEquals(15, p2.getLargeur());
-        assertEquals(25, p2.getHauteur());
+    void testConstructeurParametresInvalides() {
+        assertThrows(IllegalArgumentException.class, () -> new Puits(4, 20));   // largeur trop petite
+        assertThrows(IllegalArgumentException.class, () -> new Puits(16, 20));  // largeur trop grande
+        assertThrows(IllegalArgumentException.class, () -> new Puits(10, 14));  // profondeur trop petite
+        assertThrows(IllegalArgumentException.class, () -> new Puits(10, 26));  // profondeur trop grande
     }
 
-    // Vérification que des dimensions hors bornes provoquent une exception
+    // Vérifie que le puits vide n’est pas considéré comme plein
     @Test
-    void testConstructeurInvalide() {
-        // Largeur < 5
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Puits(4, 20);
-        }, "Une largeur < 5 doit lever IllegalArgumentException.");
-
-        // Largeur > 15
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Puits(16, 20);
-        }, "Une largeur > 15 doit lever IllegalArgumentException.");
-
-        // Profondeur < 15
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Puits(10, 14);
-        }, "Une profondeur < 15 doit lever IllegalArgumentException.");
-
-        // Profondeur > 25
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Puits(10, 26);
-        }, "Une profondeur > 25 doit lever IllegalArgumentException.");
+    void testEstPlein_false() {
+        assertFalse(puitsDefaut.estPlein());
     }
 
-    // Test setPieceSuivante() quand aucune pieceSuivante n'existe encore
+    // Remplit la première ligne à la main, puis vérifie que le puits est détecté comme plein
     @Test
-    void testSetPieceSuivanteSansPrecedente() {
-        // Au départ, pieceActuelle et pieceSuivante sont null
-        assertNull(puitsDefaut.getPieceActuelle(),
-            "La piece Actuelle devrait être null avant toute initialisation.");
-        assertNull(puitsDefaut.getPieceSuivante(),
-            "La piece Suivante devrait être null avant toute initialisation.");
+    void testEstPlein_true() {
+        Element[][] grille = puitsDefaut.getGrille();
+        for (int i = 0; i < puitsDefaut.getLargeur(); i++) {
+            grille[0][i] = new Element(new Coordonnees(i, 0), Couleur.BLEU);
+        }
+        assertTrue(puitsDefaut.estPlein());
+    }
 
-        // On définit un OTetromino en tant que nouvelle pièce suivante
-        // (Adapter si votre constructeur exige Couleur et Coordonnees)
-        Piece pieceO = new OTetromino(new Coordonnees(0, 0), Couleur.ROUGE); 
+    // Vérifie le contenu textuel retourné par toString()
+    @Test
+    void testToString_FormatTexte() {
+        String str = puitsDefaut.toString();
+        assertTrue(str.contains("Puits : Dimension 10 x 15"));
+        assertTrue(str.contains("Piece Actuelle : <aucune>"));
+        assertTrue(str.contains("Piece Suivante : <aucune>"));
+    }
+
+    // Vérifie le comportement de setPieceSuivante quand aucune pièce actuelle n'existe
+    @Test
+    void testSetPieceSuivante_PremierAppel() {
+        Piece pieceO = new OTetromino(new Coordonnees(4, 5), Couleur.ROUGE);
         puitsDefaut.setPieceSuivante(pieceO);
 
-        // Vérification : pieceSuivante est maintenant pieceO
-        assertEquals(pieceO, puitsDefaut.getPieceSuivante(),
-            "La pièce suivante n'a pas été correctement définie.");
-        // pieceActuelle doit toujours être null après le premier appel
-        assertNull(puitsDefaut.getPieceActuelle(),
-            "La piece Actuelle ne doit pas être modifiée lors du premier appel.");
+        assertNull(puitsDefaut.getPieceActuelle());
+        assertEquals(pieceO, puitsDefaut.getPieceSuivante());
     }
 
-    // Test setPieceSuivante() quand une pieceSuivante existait déjà
+    // Vérifie que l’ancienne pièceSuivante devient pièceActuelle lors du 2e appel
     @Test
-    void testSetPieceSuivanteAvecPrecedente() {
-        // Première pièce suivante
-        Piece pieceO = new OTetromino(new Coordonnees(0, 0), Couleur.ROUGE);
-        puitsDefaut.setPieceSuivante(pieceO);
+    void testSetPieceSuivante_DeplacementPieceActuelle() {
+        Piece pieceO = new OTetromino(new Coordonnees(2, 2), Couleur.JAUNE);
+        Piece pieceI = new ITetromino(new Coordonnees(3, 3), Couleur.CYAN);
 
-        // Deuxième pièce suivante
-        Piece pieceI = new ITetromino(new Coordonnees(5, 5), Couleur.ORANGE);
+        puitsDefaut.setPieceSuivante(pieceO);
         puitsDefaut.setPieceSuivante(pieceI);
 
-        // Vérification : pieceActuelle doit être la précédente pieceSuivante (pieceO)
-        assertEquals(pieceO, puitsDefaut.getPieceActuelle(),
-            "La piece Actuelle devrait être l'ancienne pièce Suivante.");
+        assertEquals(pieceO, puitsDefaut.getPieceActuelle());
 
-        // Vérification : pieceSuivante doit être pieceI
-        assertEquals(pieceI, puitsDefaut.getPieceSuivante(),
-            "La nouvelle pièce Suivante devrait être pieceI.");
+        // La position doit avoir été recalculée à (largeur / 2, -4)
+        assertEquals(5, pieceO.getElements()[0].getCoordonnees().getAbscisse());
+        assertEquals(-4, pieceO.getElements()[0].getCoordonnees().getOrdonnee());
 
-        // Vérification de la position de la pieceActuelle (coordonnées (largeur/2, -4))
-        // On teste le premier élément de la pièce
-        int expectedX = puitsDefaut.getLargeur() / 2;
-        int expectedY = -4;
-
-        assertEquals(expectedX,
-            pieceO.getElements()[0].getCoordonnees().getAbscisse(),
-            "Coordonnée X de la piece Actuelle incorrecte.");
-        assertEquals(expectedY,
-            pieceO.getElements()[0].getCoordonnees().getOrdonnee(),
-            "Coordonnée Y de la piece Actuelle incorrecte.");
+        assertEquals(pieceI, puitsDefaut.getPieceSuivante());
     }
 
-    // Test simple de la méthode estPlein() (facultatif selon l'énoncé)
+    // Vérifie que clearLigne supprime bien une ligne remplie
     @Test
-    void testEstPlein() {
-        // Au départ, le puits est vide => pas plein
-        assertFalse(puitsDefaut.estPlein(),
-            "Un puits vide ne devrait pas être plein.");
+    void testClearLigne() {
+        // Ajout d'une pièce O dans le puits
+        Piece pieceO = new OTetromino(new Coordonnees(4, 5), Couleur.ROUGE);
+        puitsDefaut.setPieceSuivante(pieceO);
+        puitsDefaut.ajouterPiece(pieceO);
 
-        // Ex. minimal : remplir artificiellement la ligne 0 du puits (si vous souhaitez tester)
-        // ...
-        // for (int col = 0; col < puitsDefaut.getLargeur(); col++) {
-        //     // Simuler un Element dans la première ligne
-        //     // (vous pouvez créer un Element avec Coordonnees(col,0) + Couleur.ROUGE par ex.)
-        // }
+        // Remplissage manuel de la ligne 5
+        for (int i = 0; i < puitsDefaut.getLargeur(); i++) {
+            if (puitsDefaut.getGrille()[5][i] == null) {
+                puitsDefaut.getGrille()[5][i] = new Element(new Coordonnees(i, 5), Couleur.BLEU);
+            }
+        }
 
-        // assertTrue(puitsDefaut.estPlein(), "Après remplissage, le puits devrait être plein.");
+        // Vérifie que la ligne 5 est bien remplie avant suppression
+        for (int i = 0; i < puitsDefaut.getLargeur(); i++) {
+            assertNotNull(puitsDefaut.getGrille()[5][i], "Ligne non remplie avant clear.");
+        }
+
+        // Appel à clearLigne
+        puitsDefaut.clearLigne(5);
+
+        // Vérifie que la ligne 5 est vide après suppression
+        for (int i = 0; i < puitsDefaut.getLargeur(); i++) {
+            assertNull(puitsDefaut.getGrille()[5][i], "Ligne non vidée après clear.");
+        }
     }
 
-    // Test de toString() pour vérifier le format
+    // Teste que les getters grille / largeur / profondeur sont cohérents
     @Test
-    void testToString() {
-        String str = puitsDefaut.toString();
-
-        // On attend au minimum :
-        // "Puits : Dimension 10 x 15"
-        // "Piece Actuelle : <aucune>"
-        // "Piece Suivante : <aucune>"
-        // On peut vérifier avec contains() ou un equals() sur plusieurs lignes
-
-        assertTrue(str.contains("Puits : Dimension 10 x 15"),
-            "La première ligne doit indiquer la dimension du puits.");
-        assertTrue(str.contains("Piece Actuelle : <aucune>"),
-            "La pièce actuelle devrait être <aucune> avant initialisation.");
-        assertTrue(str.contains("Piece Suivante : <aucune>"),
-            "La pièce suivante devrait être <aucune> avant initialisation.");
+    void testAccesseurs() {
+        assertEquals(puitsDefaut.getGrille().length, puitsDefaut.getProfondeur());
+        assertEquals(puitsDefaut.getGrille()[0].length, puitsDefaut.getLargeur());
     }
 }

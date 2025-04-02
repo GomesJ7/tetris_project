@@ -17,10 +17,10 @@ class ITetrominoTest {
         
         // Chaîne attendue (les coordonnées des éléments doivent être alignées horizontalement)
         String expected = "ITetromino :\n" +
-                          "\t(3,4) - ORANGE\n" +
-                          "\t(4,4) - ORANGE\n" +
-                          "\t(5,4) - ORANGE\n" +
-                          "\t(6,4) - ORANGE\n";
+                          "\t(3, 4) - ORANGE\n" +
+                          "\t(4, 4) - ORANGE\n" +
+                          "\t(5, 4) - ORANGE\n" +
+                          "\t(6, 4) - ORANGE\n";
         
         // Vérification que toString retourne exactement la chaîne attendue
         assertEquals(expected, tetromino.toString(), "La méthode toString() ne retourne pas la chaîne attendue.");

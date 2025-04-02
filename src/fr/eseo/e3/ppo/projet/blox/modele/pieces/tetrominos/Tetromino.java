@@ -5,9 +5,8 @@ import fr.eseo.e3.ppo.projet.blox.modele.Couleur;
 import fr.eseo.e3.ppo.projet.blox.modele.Element;
 import fr.eseo.e3.ppo.projet.blox.modele.pieces.Piece;
 
-public abstract class Tetromino implements Piece {  
-    // Tableau des éléments constituant le Tetromino  
-    protected Element[] elements;  
+public abstract class Tetromino extends Piece {
+    protected Element[] elements = new Element[4];  
 
     /**
      * Constructeur générique pour tous les Tetrominos.

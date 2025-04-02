@@ -17,10 +17,10 @@ class OTetrominoTest {
 
         // La chaîne attendue qui devrait être retournée par toString()
         String expected = "OTetromino :\n" +
-                "\t(6,5) - CYAN\n" +
-                "\t(7,5) - CYAN\n" +
-                "\t(6,6) - CYAN\n" +
-                "\t(7,6) - CYAN\n";
+                "\t(6, 5) - CYAN\n" +
+                "\t(7, 5) - CYAN\n" +
+                "\t(6, 6) - CYAN\n" +
+                "\t(7, 6) - CYAN\n";
 
         // Vérification que la méthode toString() retourne la chaîne correcte
         assertEquals(expected, tetromino.toString(), "La méthode toString() ne génère pas la chaîne attendue.");

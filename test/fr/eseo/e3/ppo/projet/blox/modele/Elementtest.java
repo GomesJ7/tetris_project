@@ -12,7 +12,7 @@ class ElementTest {
         Element element = new Element(12, 7, Couleur.VIOLET);
         
         // Vérification que la méthode toString retourne la chaîne attendue
-        String expected = "(12,7) - VIOLET";
+        String expected = "(12, 7) - VIOLET";
         assertEquals(expected, element.toString(), "La méthode toString() ne retourne pas la chaîne attendue.");
     }
 

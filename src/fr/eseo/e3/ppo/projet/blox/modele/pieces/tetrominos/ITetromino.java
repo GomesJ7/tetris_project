@@ -21,4 +21,23 @@ public class ITetromino extends Tetromino {
         elements[2] = new Element(new Coordonnees(coordonnees.getAbscisse() + 2, coordonnees.getOrdonnee()), couleur);
         elements[3] = new Element(new Coordonnees(coordonnees.getAbscisse() + 3, coordonnees.getOrdonnee()), couleur);
     }
+    
+    /**
+     * Redéfinit la méthode toString pour afficher la pièce de type OTetromino.
+     * Format attendu :
+     * OTetromino :
+     *     (x1,y1) - COULEUR
+     *     (x2,y2) - COULEUR
+     *     ...
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("ITetromino :\n");
+        for (Element e : getElements()) {
+            sb.append("\t").append(e.toString()).append("\n");
+        }
+        return sb.toString();
+    }
+
 }
