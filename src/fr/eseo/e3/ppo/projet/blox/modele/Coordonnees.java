@@ -31,8 +31,9 @@ public class Coordonnees {
     // Retourne une chaîne sous la forme "(abscisse, ordonnee)"
     @Override
     public String toString() {
-        return "(" + abscisse + ", " + ordonnee + ")"; // Espaces après la virgule
+        return "(" + this.abscisse + ", " + this.ordonnee + ")";
     }
+
 
     @Override
     public boolean equals(Object obj) {
