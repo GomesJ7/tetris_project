@@ -27,5 +27,11 @@ public class VuePuitsTest {
         fenetre.pack();
         fenetre.setSize(400, 600);
         fenetre.setVisible(true);
+        
+        
     }
+    
+    
+    
 }
+
