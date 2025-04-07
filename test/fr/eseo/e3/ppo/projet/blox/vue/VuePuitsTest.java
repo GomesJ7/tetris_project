@@ -7,7 +7,12 @@ import fr.eseo.e3.ppo.projet.blox.modele.Couleur;
 import fr.eseo.e3.ppo.projet.blox.modele.Puits;
 import fr.eseo.e3.ppo.projet.blox.modele.pieces.tetrominos.OTetromino;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
 public class VuePuitsTest {
+	
 
     public static void main(String[] args) {
         // Crée un puits
@@ -21,11 +26,17 @@ public class VuePuitsTest {
         VuePuits vue = new VuePuits(puits, 30); // Taille plus grande pour test visuel
 
         // Crée une fenêtre et affiche la vue
-        JFrame fenetre = new JFrame("Test VuePuits");
+      /**  JFrame fenetre = new JFrame("Test VuePuits");
         fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         fenetre.setContentPane(vue);
         fenetre.pack();
         fenetre.setSize(400, 600);
-        fenetre.setVisible(true);
+        fenetre.setVisible(true); **/
     }
+    
+    @Test
+    void testGetTaille() {
+    	//assertEquals();
+    }
+    
 }
