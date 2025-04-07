@@ -26,12 +26,12 @@ public class VuePuitsTest {
         VuePuits vue = new VuePuits(puits, 30); // Taille plus grande pour test visuel
 
         // Crée une fenêtre et affiche la vue
-      /**  JFrame fenetre = new JFrame("Test VuePuits");
+        JFrame fenetre = new JFrame("Test VuePuits");
         fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         fenetre.setContentPane(vue);
         fenetre.pack();
         fenetre.setSize(400, 600);
-        fenetre.setVisible(true); **/
+        fenetre.setVisible(true); 
     }
     
     @Test

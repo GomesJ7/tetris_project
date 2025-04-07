@@ -92,7 +92,9 @@ public class Puits {
 
         if (this.pieceSuivante != null) {
             this.pieceActuelle = this.pieceSuivante;
-            this.pieceActuelle.setPosition(this.largeur / 2, -4);
+            
+            // Assurer que la pièce soit visible (positionner à une coordonnée positive et au centre)
+            this.pieceActuelle.setPosition(this.largeur / 2, 0);
             pcs.firePropertyChange(MODIFICATION_PIECE_ACTUELLE, ancienneActuelle, this.pieceActuelle);
         }
 
@@ -100,6 +102,7 @@ public class Puits {
         piece.setPuits(this);
         pcs.firePropertyChange(MODIFICATION_PIECE_SUIVANTE, ancienneSuivante, this.pieceSuivante);
     }
+
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(listener);

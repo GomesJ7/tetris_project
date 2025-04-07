@@ -6,6 +6,7 @@ import fr.eseo.e3.ppo.projet.blox.modele.pieces.Piece;
 
 import javax.swing.JPanel;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -26,7 +27,7 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
     // Constructeur avec taille personnalisée
     public VuePuits(Puits puits, int taille) {
         this.taille = taille;
-        setPuits(puits); // enregistre aussi comme listener
+        setPuits(puits); // s'enregistre automatiquement comme listener
     }
 
     public Puits getPuits() {
@@ -57,42 +58,48 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
         repaint();
     }
 
-    // Méthode appelée automatiquement à chaque changement de propriété du puits
+    private void setVuePiece(Piece piece) {
+        this.vuePiece = (piece != null) ? new VuePiece(piece, taille) : null;
+    }
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (Puits.MODIFICATION_PIECE_ACTUELLE.equals(evt.getPropertyName())) {
-            Piece nouvelle = (Piece) evt.getNewValue();
-            setVuePiece(nouvelle);
+            setVuePiece((Piece) evt.getNewValue());
             repaint();
         }
     }
 
-    // Méthode privée désormais : seule la classe elle-même peut changer la VuePiece
-    private void setVuePiece(Piece piece) {
-        this.vuePiece = (piece != null) ? new VuePiece(piece, taille) : null;
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(puits.getLargeur() * taille, puits.getProfondeur() * taille);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Fond blanc
+        // Fond
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        // Dessin de la grille
+        // Affichage de la grille (y puis x)
         if (puits != null) {
             Element[][] grille = puits.getGrille();
             for (int y = 0; y < grille.length; y++) {
                 for (int x = 0; x < grille[y].length; x++) {
+                    int px = x * taille;
+                    int py = y * taille;
+
                     if (grille[y][x] != null) {
-                        g.setColor(Color.LIGHT_GRAY);
-                        int px = x * taille;
-                        int py = y * taille;
-                        g.fillRect(px, py, taille, taille);
-                        g.setColor(Color.BLACK);
-                        g.drawRect(px, py, taille, taille);
+                        g.setColor(grille[y][x].getCouleur().getCouleurPourAfficher());
+                    } else {
+                        g.setColor(Color.BLACK); // cases vides
                     }
+
+                    g.fillRect(px, py, taille, taille);
+                    g.setColor(Color.GRAY); // grille
+                    g.drawRect(px, py, taille, taille);
                 }
             }
         }

@@ -15,18 +15,15 @@ public class VuePiece extends JPanel {
     private Piece piece;
     private int taille;
 
-    // Constructeur avec taille personnalisée
     public VuePiece(Piece piece, int taille) {
         this.piece = piece;
         this.taille = taille;
     }
 
-    // Constructeur avec taille par défaut
     public VuePiece(Piece piece) {
         this(piece, TAILLE_PAR_DEFAUT);
     }
 
-    // Getters / setters
     public Piece getPiece() {
         return piece;
     }
@@ -45,7 +42,6 @@ public class VuePiece extends JPanel {
         repaint();
     }
 
-    // Paint : on délègue à afficherPiece()
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -56,21 +52,23 @@ public class VuePiece extends JPanel {
         afficherPiece(g);
     }
 
-    // Nouvelle méthode demandée par le point 3.3.8
     public void afficherPiece(Graphics g) {
         if (piece != null) {
+            System.out.println("Affichage de la pièce : " + piece); 
             for (Element e : piece.getElements()) {
                 Coordonnees c = e.getCoordonnees();
                 int x = c.getAbscisse();
                 int y = c.getOrdonnee();
 
-                // Dessin temporaire en gris (la couleur sera améliorée en 3.3.9)
                 g.setColor(Color.LIGHT_GRAY);
                 g.fillRect(x * taille, y * taille, taille, taille);
-
                 g.setColor(Color.BLACK);
                 g.drawRect(x * taille, y * taille, taille, taille);
             }
+        } else {
+            System.out.println("Aucune pièce à afficher.");
         }
     }
+
+
 }
