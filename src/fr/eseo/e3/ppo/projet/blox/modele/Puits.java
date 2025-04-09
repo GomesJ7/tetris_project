@@ -57,6 +57,17 @@ public class Puits {
         return this.pieceSuivante;
     }
 
+    
+    public void setPieceActuelle(Piece piece) {
+        Piece anciennePiece = this.pieceActuelle;
+        this.pieceActuelle = piece;
+        if (piece != null) {
+            piece.setPuits(this);
+        }
+        pcs.firePropertyChange(MODIFICATION_PIECE_ACTUELLE, anciennePiece, piece);
+    }
+
+    
     public void ajouterPiece(Piece piece) {
         for (Element e : piece.getElements()) {
             Coordonnees coord = e.getCoordonnees();
@@ -92,9 +103,8 @@ public class Puits {
 
         if (this.pieceSuivante != null) {
             this.pieceActuelle = this.pieceSuivante;
-            
-            // Assurer que la pièce soit visible (positionner à une coordonnée positive et au centre)
-            this.pieceActuelle.setPosition(this.largeur / 2, 0);
+            this.pieceActuelle.setPuits(this);
+            this.pieceActuelle.setPosition(this.largeur / 2, -4);
             pcs.firePropertyChange(MODIFICATION_PIECE_ACTUELLE, ancienneActuelle, this.pieceActuelle);
         }
 
@@ -102,7 +112,6 @@ public class Puits {
         piece.setPuits(this);
         pcs.firePropertyChange(MODIFICATION_PIECE_SUIVANTE, ancienneSuivante, this.pieceSuivante);
     }
-
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(listener);

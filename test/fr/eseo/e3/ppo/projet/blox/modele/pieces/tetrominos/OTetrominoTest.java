@@ -9,58 +9,63 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class OTetrominoTest {
 
-    // Test de la méthode toString pour vérifier l'affichage de l'OTetromino
     @Test
     void testToString() {
-        // Création d'un OTetromino à la position (6, 5) avec la couleur CYAN
         OTetromino tetromino = new OTetromino(new Coordonnees(6, 5), Couleur.CYAN);
-
-        // La chaîne attendue qui devrait être retournée par toString()
         String expected = "OTetromino :\n" +
-                "\t(6, 5) - CYAN\n" +
-                "\t(7, 5) - CYAN\n" +
-                "\t(6, 6) - CYAN\n" +
-                "\t(7, 6) - CYAN\n";
-
-        // Vérification que la méthode toString() retourne la chaîne correcte
-        assertEquals(expected, tetromino.toString(), "La méthode toString() ne génère pas la chaîne attendue.");
+                          "\t(6, 5) - CYAN\n" +
+                          "\t(7, 5) - CYAN\n" +
+                          "\t(6, 6) - CYAN\n" +
+                          "\t(7, 6) - CYAN\n";
+        assertEquals(expected, tetromino.toString());
     }
 
-    // Test de la méthode getElements pour vérifier que tous les éléments sont correctement initialisés
     @Test
     void testGetElements() {
         OTetromino tetromino = new OTetromino(new Coordonnees(6, 5), Couleur.CYAN);
-
-        // Vérifier que les éléments de l'OTetromino sont bien initialisés
         Element[] elements = tetromino.getElements();
-        assertEquals(4, elements.length, "L'OTetromino doit avoir 4 éléments.");
-
-        // Vérification des positions des éléments
-        assertEquals(new Coordonnees(6, 5), elements[0].getCoordonnees(), "L'élément 0 n'a pas les bonnes coordonnées.");
-        assertEquals(new Coordonnees(7, 5), elements[1].getCoordonnees(), "L'élément 1 n'a pas les bonnes coordonnées.");
-        assertEquals(new Coordonnees(6, 6), elements[2].getCoordonnees(), "L'élément 2 n'a pas les bonnes coordonnées.");
-        assertEquals(new Coordonnees(7, 6), elements[3].getCoordonnees(), "L'élément 3 n'a pas les bonnes coordonnées.");
+        assertEquals(4, elements.length);
+        assertEquals(new Coordonnees(6, 5), elements[0].getCoordonnees());
+        assertEquals(new Coordonnees(7, 5), elements[1].getCoordonnees());
+        assertEquals(new Coordonnees(6, 6), elements[2].getCoordonnees());
+        assertEquals(new Coordonnees(7, 6), elements[3].getCoordonnees());
     }
 
-    // Test du constructeur avec des coordonnées par défaut
     @Test
     void testOTetrominoConstructorDefaultColor() {
-        // Création d'un OTetromino avec des coordonnées (12, 7) et couleur VIOLET
         OTetromino tetromino = new OTetromino(new Coordonnees(12, 7), Couleur.VIOLET);
-
-        // Vérification que la couleur VIOLET est bien utilisée pour tous les éléments
         for (Element e : tetromino.getElements()) {
-            assertEquals(Couleur.VIOLET, e.getCouleur(), "La couleur de l'OTetromino n'est pas correcte.");
+            assertEquals(Couleur.VIOLET, e.getCouleur());
         }
     }
-    
+
     @Test
     void testDeplacerDeBas() {
         OTetromino tetromino = new OTetromino(new Coordonnees(4, 0), Couleur.BLEU);
-        tetromino.deplacerDe(0, 1); // vers le bas
+        tetromino.deplacerDe(0, 1);
         for (Element e : tetromino.getElements()) {
-            assertTrue(e.getCoordonnees().getOrdonnee() >= 1);
+            assertEquals(1, e.getCoordonnees().getOrdonnee());
         }
     }
 
+    @Test
+    void testRotationDoesNothing() {
+        OTetromino tetromino = new OTetromino(new Coordonnees(2, 3), Couleur.JAUNE);
+        // Sauvegarde de l'état initial
+        Element[] before = tetromino.getElements();
+        Coordonnees[] initialCoords = new Coordonnees[before.length];
+        for (int i = 0; i < before.length; i++) {
+            initialCoords[i] = before[i].getCoordonnees();
+        }
+
+        // Tentative de rotation
+        tetromino.tourner(true);
+        tetromino.tourner(false);
+
+        // Vérifie qu'aucune coordonnée n'a changé
+        Element[] after = tetromino.getElements();
+        for (int i = 0; i < after.length; i++) {
+            assertEquals(initialCoords[i], after[i].getCoordonnees(), "La rotation ne devrait pas affecter un OTetromino.");
+        }
+    }
 }

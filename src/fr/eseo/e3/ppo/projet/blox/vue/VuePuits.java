@@ -1,5 +1,6 @@
 package fr.eseo.e3.ppo.projet.blox.vue;
 
+import fr.eseo.e3.ppo.projet.blox.controleur.PieceDeplacement;
 import fr.eseo.e3.ppo.projet.blox.modele.Element;
 import fr.eseo.e3.ppo.projet.blox.modele.Puits;
 import fr.eseo.e3.ppo.projet.blox.modele.pieces.Piece;
@@ -18,6 +19,7 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
     private Puits puits;
     private int taille;
     private VuePiece vuePiece;
+    private PieceDeplacement pieceDeplacement;
 
     // Constructeur avec taille par défaut
     public VuePuits(Puits puits) {
@@ -27,7 +29,7 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
     // Constructeur avec taille personnalisée
     public VuePuits(Puits puits, int taille) {
         this.taille = taille;
-        setPuits(puits); // s'enregistre automatiquement comme listener
+        this.setPuits(puits);
     }
 
     public Puits getPuits() {
@@ -44,6 +46,13 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
         if (this.puits != null) {
             this.puits.addPropertyChangeListener(this);
             setVuePiece(this.puits.getPieceActuelle());
+
+            // (Re)crée un listener propre à l'instance actuelle de VuePuits et Puits
+            if (this.pieceDeplacement != null) {
+                this.removeMouseMotionListener(this.pieceDeplacement);
+            }
+            this.pieceDeplacement = new PieceDeplacement(this, this.puits);
+            this.addMouseMotionListener(this.pieceDeplacement);
         }
 
         repaint();
@@ -79,11 +88,9 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Fond
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        // Affichage de la grille (y puis x)
         if (puits != null) {
             Element[][] grille = puits.getGrille();
             for (int y = 0; y < grille.length; y++) {
@@ -94,17 +101,16 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
                     if (grille[y][x] != null) {
                         g.setColor(grille[y][x].getCouleur().getCouleurPourAfficher());
                     } else {
-                        g.setColor(Color.BLACK); // cases vides
+                        g.setColor(Color.BLACK);
                     }
 
                     g.fillRect(px, py, taille, taille);
-                    g.setColor(Color.GRAY); // grille
+                    g.setColor(Color.GRAY);
                     g.drawRect(px, py, taille, taille);
                 }
             }
         }
 
-        // Affichage de la pièce actuelle via VuePiece
         if (vuePiece != null) {
             vuePiece.afficherPiece(g);
         }
