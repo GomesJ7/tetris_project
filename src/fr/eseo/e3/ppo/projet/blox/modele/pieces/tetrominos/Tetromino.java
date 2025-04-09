@@ -61,28 +61,46 @@ public abstract class Tetromino extends Piece {
 
     @Override
     public void tourner(boolean sensHoraire) {
-        Coordonnees origine = elements[0].getCoordonnees();
-        int ox = origine.getAbscisse();
-        int oy = origine.getOrdonnee();
+        Coordonnees ref = elements[0].getCoordonnees();
+        int xRef = ref.getAbscisse();
+        int yRef = ref.getOrdonnee();
+
+        Coordonnees[] nouvellesCoordonnees = new Coordonnees[elements.length];
+        nouvellesCoordonnees[0] = ref; // l'élément de référence reste à sa place
 
         for (int i = 1; i < elements.length; i++) {
             Coordonnees c = elements[i].getCoordonnees();
-            int dx = c.getAbscisse() - ox;
-            int dy = c.getOrdonnee() - oy;
+            int dx = c.getAbscisse() - xRef;
+            int dy = c.getOrdonnee() - yRef;
 
-            int newDx, newDy;
-
+            int newX, newY;
             if (sensHoraire) {
-                newDx = dy;
-                newDy = -dx;
+                newX = xRef - dy;
+                newY = yRef + dx;
             } else {
-                newDx = -dy;
-                newDy = dx;
+                newX = xRef + dy;
+                newY = yRef - dx;
             }
 
-            int newX = ox + newDx;
-            int newY = oy + newDy;
-            elements[i].setCoordonnees(new Coordonnees(newX, newY));
+            nouvellesCoordonnees[i] = new Coordonnees(newX, newY);
         }
+
+        // Vérifie que la rotation est possible dans les limites du puits
+        boolean rotationPossible = true;
+        for (Coordonnees c : nouvellesCoordonnees) {
+            int x = c.getAbscisse();
+            int y = c.getOrdonnee();
+            if (puits != null && (x < 0 || x >= puits.getLargeur() || y >= puits.getProfondeur())) {
+                rotationPossible = false;
+                break;
+            }
+        }
+
+        if (rotationPossible) {
+            for (int i = 1; i < elements.length; i++) {
+                elements[i].setCoordonnees(nouvellesCoordonnees[i]);
+            }
+        }
+        // Sinon, on ignore la rotation
     }
 }

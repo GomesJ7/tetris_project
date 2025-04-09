@@ -4,10 +4,11 @@ import fr.eseo.e3.ppo.projet.blox.modele.Puits;
 import fr.eseo.e3.ppo.projet.blox.modele.pieces.Piece;
 import fr.eseo.e3.ppo.projet.blox.vue.VuePuits;
 
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
 
-public class PieceDeplacement implements MouseMotionListener {
+public class PieceDeplacement extends MouseAdapter {
 
     private final VuePuits vuePuits;
     private final Puits puits;
@@ -26,29 +27,30 @@ public class PieceDeplacement implements MouseMotionListener {
             int xPixel = e.getX();
             int colonne = xPixel / vuePuits.getTaille();
 
-            if (ancienneColonne == -1) {
-                ancienneColonne = colonne;
-            } else if (colonne != ancienneColonne) {
-                int deplacement = colonne - ancienneColonne;
+            int refX = piece.getElementReference().getCoordonnees().getAbscisse();
+            int dx = colonne - refX;
 
-                try {
-                    if (deplacement > 0) {
-                        piece.deplacerDe(1, 0); // droite
-                    } else {
-                        piece.deplacerDe(-1, 0); // gauche
-                    }
-                } catch (IllegalArgumentException ex) {
-                    // Aucun déplacement si le mouvement n'est pas valide (bord du puits par exemple)
-                }
-
-                ancienneColonne = colonne;
+            if (dx != 0 && piece.deplacementPossible(dx, 0)) {
+                piece.deplacerDe(dx, 0);
                 vuePuits.repaint();
             }
         }
     }
 
     @Override
-    public void mouseDragged(MouseEvent e) {
-        // Ignoré selon les consignes
+    public void mouseEntered(MouseEvent e) {
+        ancienneColonne = -1; // Reset colonne quand la souris entre dans la fenêtre
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        Piece piece = puits.getPieceActuelle();
+
+        if (piece != null && e.getWheelRotation() > 0) {
+            if (piece.deplacementPossible(0, 1)) {
+                piece.deplacerDe(0, 1);
+                vuePuits.repaint();
+            }
+        }
     }
 }

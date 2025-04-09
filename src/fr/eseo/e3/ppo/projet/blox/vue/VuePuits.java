@@ -1,6 +1,7 @@
 package fr.eseo.e3.ppo.projet.blox.vue;
 
 import fr.eseo.e3.ppo.projet.blox.controleur.PieceDeplacement;
+import fr.eseo.e3.ppo.projet.blox.controleur.PieceRotation;
 import fr.eseo.e3.ppo.projet.blox.modele.Element;
 import fr.eseo.e3.ppo.projet.blox.modele.Puits;
 import fr.eseo.e3.ppo.projet.blox.modele.pieces.Piece;
@@ -20,13 +21,12 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
     private int taille;
     private VuePiece vuePiece;
     private PieceDeplacement pieceDeplacement;
+    private PieceRotation pieceRotation; // AJOUTÉ
 
-    // Constructeur avec taille par défaut
     public VuePuits(Puits puits) {
         this(puits, TAILLE_PAR_DEFAUT);
     }
 
-    // Constructeur avec taille personnalisée
     public VuePuits(Puits puits, int taille) {
         this.taille = taille;
         this.setPuits(puits);
@@ -47,12 +47,25 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
             this.puits.addPropertyChangeListener(this);
             setVuePiece(this.puits.getPieceActuelle());
 
-            // (Re)crée un listener propre à l'instance actuelle de VuePuits et Puits
+            // Retirer les anciens listeners s'ils existent
             if (this.pieceDeplacement != null) {
                 this.removeMouseMotionListener(this.pieceDeplacement);
+                this.removeMouseListener(this.pieceDeplacement);
+                this.removeMouseWheelListener(this.pieceDeplacement);
             }
+
+            if (this.pieceRotation != null) {
+                this.removeMouseListener(this.pieceRotation);
+            }
+
+            // Ajouter les nouveaux listeners
             this.pieceDeplacement = new PieceDeplacement(this, this.puits);
             this.addMouseMotionListener(this.pieceDeplacement);
+            this.addMouseListener(this.pieceDeplacement);
+            this.addMouseWheelListener(this.pieceDeplacement);
+
+            this.pieceRotation = new PieceRotation(this.puits);
+            this.addMouseListener(this.pieceRotation);
         }
 
         repaint();
@@ -64,6 +77,9 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
 
     public void setTaille(int taille) {
         this.taille = taille;
+        if (this.vuePiece != null) {
+            this.vuePiece.setTaille(taille); 
+        }
         repaint();
     }
 
