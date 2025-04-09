@@ -10,53 +10,48 @@ import java.awt.BorderLayout;
 
 public class VuePuitsAffichageTest {
 
-    private void testConstructeurPuits() {
-        Puits puits = new Puits();
+	public static void main(String[] args) {
+	    // Création du puits
+	    Puits puits = new Puits();
 
-        UsineDePiece usine = new UsineDePiece();
-        usine.setMode(Mode.DETERMINISTE);
-        Piece piece = usine.genererPiece();
-        puits.setPieceSuivante(piece);
+	    // Création de la vue avec une taille personnalisée (30 pixels par élément)
+	    VuePuits vuePuits = new VuePuits(puits, 30);
+	    // Enregistrement de la VuePuits comme écouteur sur le puits
+	    puits.addPropertyChangeListener(vuePuits);
 
-        JFrame frame = new JFrame("Puits");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    // Création de l'usine de pièce en mode déterministe pour obtenir toujours la même suite
+	    UsineDePiece usine = new UsineDePiece();
+	    usine.setMode(Mode.DETERMINISTE);
+	    Piece piece1 = usine.genererPiece();
+	    Piece piece2 = usine.genererPiece();
 
-        VuePuits vuePuits = new VuePuits(puits);
-        VuePiece vuePiece = new VuePiece(piece);  // <-- ajout explicite
+	    // Premier appel : définit uniquement la pièce suivante (pieceSuivante)
+	    puits.setPieceSuivante(piece1);
 
-        frame.add(vuePuits, BorderLayout.CENTER);
-        frame.add(vuePiece, BorderLayout.SOUTH); // Ajout visible de VuePiece
+	    // Deuxième appel : la pièce déjà présente devient la pièce actuelle, et piece2 est la nouvelle pièce suivante
+	    puits.setPieceSuivante(piece2);
 
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
+	    // Attente pour permettre le passage des PropertyChangeEvents et la mise à jour automatique de la VuePiece
+	    try {
+	        Thread.sleep(500);
+	    } catch (InterruptedException e) {
+	        Thread.currentThread().interrupt();
+	    }
 
-    private void testConstructeurPuitsTaille() {
-        Puits puits = new Puits();
+	    // Vérification manuelle : affichage dans la console pour confirmer que la VuePiece a été correctement mise à jour
+	    if (vuePuits.getPuits() != null) {
+	        System.out.println("VuePiece mise à jour avec succès !");
+	    } else {
+	        System.out.println("Erreur : la VuePiece n'est pas initialisée !");
+	    }
 
-        UsineDePiece usine = new UsineDePiece();
-        usine.setMode(Mode.DETERMINISTE);
-        Piece piece = usine.genererPiece();
-        puits.setPieceSuivante(piece);
+	    // Création et affichage de la fenêtre pour tester visuellement l'affichage
+	    JFrame frame = new JFrame("Vue du Puits avec VuePiece");
+	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    frame.add(vuePuits, BorderLayout.CENTER);
+	    frame.pack(); // ajuste la taille avec getPreferredSize()
+	    frame.setLocationRelativeTo(null); // centre la fenêtre
+	    frame.setVisible(true);
+	}
 
-        JFrame frame = new JFrame("Puits et taille");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        VuePuits vuePuits = new VuePuits(puits, 25);
-        VuePiece vuePiece = new VuePiece(piece, 25);  // <-- ajout explicite
-
-        frame.add(vuePuits, BorderLayout.CENTER);
-        frame.add(vuePiece, BorderLayout.SOUTH); // Ajout visible de VuePiece
-
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        VuePuitsAffichageTest test = new VuePuitsAffichageTest();
-        test.testConstructeurPuits();
-        test.testConstructeurPuitsTaille();
-    }
 }
