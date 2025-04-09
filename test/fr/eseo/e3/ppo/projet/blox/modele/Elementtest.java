@@ -62,4 +62,13 @@ class ElementTest {
         // Un élément ne peut pas être égal à null
         assertFalse(element.equals(null), "L'élément ne doit pas être égal à null.");
     }
+    
+    @Test
+    void testDeplacerDeValide() {
+        Element element = new Element(5, 10, Couleur.ROUGE);
+        element.deplacerDe(1, 1); // déplacement vers le bas-droite
+        assertEquals(6, element.getCoordonnees().getAbscisse());
+        assertEquals(11, element.getCoordonnees().getOrdonnee());
+    }
+
 }

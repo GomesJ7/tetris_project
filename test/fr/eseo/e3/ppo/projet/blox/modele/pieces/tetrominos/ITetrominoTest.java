@@ -57,4 +57,14 @@ class ITetrominoTest {
         assertEquals(new Coordonnees(7, 6), elements[2].getCoordonnees(), "L'élément 2 n'a pas été déplacé correctement.");
         assertEquals(new Coordonnees(8, 6), elements[3].getCoordonnees(), "L'élément 3 n'a pas été déplacé correctement.");
     }
+    
+    @Test
+    void testDeplacerDeBas() {
+        ITetromino tetromino = new ITetromino(new Coordonnees(4, 0), Couleur.BLEU);
+        tetromino.deplacerDe(0, 1); // vers le bas
+        for (Element e : tetromino.getElements()) {
+            assertTrue(e.getCoordonnees().getOrdonnee() >= 1);
+        }
+    }
+
 }

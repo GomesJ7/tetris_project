@@ -53,4 +53,14 @@ class OTetrominoTest {
             assertEquals(Couleur.VIOLET, e.getCouleur(), "La couleur de l'OTetromino n'est pas correcte.");
         }
     }
+    
+    @Test
+    void testDeplacerDeBas() {
+        OTetromino tetromino = new OTetromino(new Coordonnees(4, 0), Couleur.BLEU);
+        tetromino.deplacerDe(0, 1); // vers le bas
+        for (Element e : tetromino.getElements()) {
+            assertTrue(e.getCoordonnees().getOrdonnee() >= 1);
+        }
+    }
+
 }

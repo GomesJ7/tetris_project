@@ -60,7 +60,7 @@ public class VuePiece extends JPanel {
                 int x = c.getAbscisse();
                 int y = c.getOrdonnee();
 
-                g.setColor(Color.LIGHT_GRAY);
+                g.setColor(Color.RED);
                 g.fillRect(x * taille, y * taille, taille, taille);
                 g.setColor(Color.BLACK);
                 g.drawRect(x * taille, y * taille, taille, taille);

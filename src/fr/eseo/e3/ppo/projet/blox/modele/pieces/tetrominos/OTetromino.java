@@ -51,4 +51,10 @@ public class OTetromino extends Tetromino {
         return sb.toString();
     }
 
+    
+    @Override
+    public void tourner(boolean sensHoraire) {
+        throw new UnsupportedOperationException("L'OTetromino ne peut pas être tourné.");
+    }
+
 }

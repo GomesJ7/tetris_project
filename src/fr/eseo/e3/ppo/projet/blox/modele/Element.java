@@ -96,4 +96,11 @@ public class Element {
         result = 31 * result + this.couleur.hashCode();
         return result; // Retourne le code de hachage final
     }
+    
+    public void deplacerDe(int deltaX, int deltaY) {
+        int nouvelleAbscisse = this.coordonnees.getAbscisse() + deltaX;
+        int nouvelleOrdonnee = this.coordonnees.getOrdonnee() + deltaY;
+        this.coordonnees = new Coordonnees(nouvelleAbscisse, nouvelleOrdonnee);
+    }
+
 }
