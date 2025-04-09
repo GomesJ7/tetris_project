@@ -10,53 +10,32 @@ import java.awt.BorderLayout;
 
 public class VuePuitsAffichageTest {
 
-    private void testConstructeurPuits() {
-        Puits puits = new Puits();
-
-        UsineDePiece usine = new UsineDePiece();
-        usine.setMode(Mode.DETERMINISTE);
-        Piece piece = usine.genererPiece();
-        puits.setPieceSuivante(piece);
-
-        JFrame frame = new JFrame("Puits");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        VuePuits vuePuits = new VuePuits(puits);
-        VuePiece vuePiece = new VuePiece(piece);  // <-- ajout explicite
-
-        frame.add(vuePuits, BorderLayout.CENTER);
-        frame.add(vuePiece, BorderLayout.SOUTH); // Ajout visible de VuePiece
-
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
-
-    private void testConstructeurPuitsTaille() {
-        Puits puits = new Puits();
-
-        UsineDePiece usine = new UsineDePiece();
-        usine.setMode(Mode.DETERMINISTE);
-        Piece piece = usine.genererPiece();
-        puits.setPieceSuivante(piece);
-
-        JFrame frame = new JFrame("Puits et taille");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        VuePuits vuePuits = new VuePuits(puits, 25);
-        VuePiece vuePiece = new VuePiece(piece, 25);  // <-- ajout explicite
-
-        frame.add(vuePuits, BorderLayout.CENTER);
-        frame.add(vuePiece, BorderLayout.SOUTH); // Ajout visible de VuePiece
-
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
-
     public static void main(String[] args) {
-        VuePuitsAffichageTest test = new VuePuitsAffichageTest();
-        test.testConstructeurPuits();
-        test.testConstructeurPuitsTaille();
+        // Création du puits
+        Puits puits = new Puits();
+
+        // Création de la vue
+        VuePuits vuePuits = new VuePuits(puits, 30); // taille personnalisée
+        puits.addPropertyChangeListener(vuePuits);  // 🔁 Écouteur enregistré
+
+        // Génération d’une pièce
+        UsineDePiece usine = new UsineDePiece();
+        usine.setMode(Mode.DETERMINISTE);
+        Piece piece1 = usine.genererPiece();
+        Piece piece2 = usine.genererPiece();
+
+        // Premier appel : définit pieceSuivante uniquement
+        puits.setPieceSuivante(piece1);
+
+        // Deuxième appel : piece1 devient pieceActuelle, piece2 devient la nouvelle pieceSuivante
+        puits.setPieceSuivante(piece2);
+
+        // Création de la fenêtre
+        JFrame frame = new JFrame("Vue du Puits avec pièce");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(vuePuits, BorderLayout.CENTER);
+        frame.pack(); // ajuste la taille automatiquement avec getPreferredSize()
+        frame.setLocationRelativeTo(null); // centre la fenêtre
+        frame.setVisible(true);
     }
 }
