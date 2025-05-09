@@ -13,19 +13,23 @@ import java.awt.BorderLayout;
 public class GraviteTest {
 
     public static void main(String[] args) {
-        Puits puits = new Puits(10, 20);
+        // Création du puits pour la V3 : gravité, défaite et contrôles clavier activés
+        Puits puits = new Puits(10, 20, true, true, true);
         VuePuits vuePuits = new VuePuits(puits, 30);
 
+        // Génération d'une pièce manuelle
         Piece piece = new ITetromino(new Coordonnees(4, 0), Couleur.ROUGE);
         puits.setPieceActuelle(piece);
 
-        JFrame frame = new JFrame("Gravité automatique");
+        // Création de la fenêtre
+        JFrame frame = new JFrame("Gravité automatique - V3");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(vuePuits, BorderLayout.CENTER);
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        new Gravite(vuePuits); // Démarrage de la gravité automatique
+        // Lancement de la gravité automatique (500ms par défaut)
+        new Gravite(vuePuits, puits, 500);
     }
 }

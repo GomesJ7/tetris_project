@@ -7,6 +7,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.function.Consumer;
 
 public class Puits {
 
@@ -32,6 +33,8 @@ public class Puits {
     private boolean controlesClavier = false;
 
     private boolean jeuTermine = false; // <- ajouté pour gérer la défaite
+    
+    private Consumer<Integer> scoreConsumer;
 
     public Puits() {
         this(LARGEUR_PAR_DEFAUT, PROFONDEUR_PAR_DEFAUT);
@@ -174,6 +177,10 @@ public class Puits {
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         pcs.removePropertyChangeListener(listener);
     }
+    
+    public void setScoreConsumer(Consumer<Integer> consumer) {
+        this.scoreConsumer = consumer;
+    }
 
     private void gererCollision() {
         if (pieceActuelle != null) {
@@ -191,6 +198,11 @@ public class Puits {
 
             pieceActuelle = null;
 
+            int lignesSupprimees = tas.supprimerLignesCompletes(); // 🆕
+            if (scoreConsumer != null && lignesSupprimees > 0) {
+                scoreConsumer.accept(lignesSupprimees); // 🆕
+            }
+
             if (!estPlein()) {
                 if (modeMultiPiece) {
                     avancerFilePieces();
@@ -204,6 +216,7 @@ public class Puits {
             }
         }
     }
+
 
     public void gravite() {
         if (jeuTermine || pieceActuelle == null) return;

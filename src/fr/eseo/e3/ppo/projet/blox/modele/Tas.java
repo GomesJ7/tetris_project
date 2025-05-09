@@ -87,7 +87,6 @@ public class Tas {
             for (Element e : piece.getElements()) {
                 int y = e.getCoordonnees().getOrdonnee();
 
-                // Si le mode défaite est activé et qu’un bloc est au-dessus du puits
                 if (puits.isDetectionDefaite() && y < 0) {
                     throw new RuntimeException("Défaite : un élément dépasse le haut du puits !");
                 }
@@ -97,7 +96,6 @@ public class Tas {
         }
     }
 
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Tas :\n");
@@ -106,12 +104,13 @@ public class Tas {
         }
         return sb.toString();
     }
-    
-    public void supprimerLignesCompletes() {
+
+    // Version modifiée : retourne le nombre de lignes supprimées
+    public int supprimerLignesCompletes() {
         int largeur = puits.getLargeur();
         int profondeur = puits.getProfondeur();
+        int lignesSupprimees = 0;
 
-        // On parcourt de bas en haut
         for (int y = profondeur - 1; y >= 0; y--) {
             int compteur = 0;
             for (Element e : elements) {
@@ -120,19 +119,19 @@ public class Tas {
                 }
             }
 
-            // Si la ligne est complète
             if (compteur == largeur) {
                 supprimerLigne(y);
-                y++; // On revérifie cette ligne après décalage
+                lignesSupprimees++;
+                y++; // Re-tester cette ligne après décalage
             }
         }
+
+        return lignesSupprimees;
     }
 
     private void supprimerLigne(int y) {
-        // Supprimer tous les éléments de la ligne
         elements.removeIf(e -> e.getCoordonnees().getOrdonnee() == y);
 
-        // Déplacer les éléments au-dessus d’une ligne vers le bas
         for (Element e : elements) {
             int yActuel = e.getCoordonnees().getOrdonnee();
             if (yActuel < y) {
@@ -140,6 +139,4 @@ public class Tas {
             }
         }
     }
-
-    
 }

@@ -7,13 +7,8 @@ import fr.eseo.e3.ppo.projet.blox.modele.Element;
 import fr.eseo.e3.ppo.projet.blox.modele.Puits;
 import fr.eseo.e3.ppo.projet.blox.modele.pieces.Piece;
 
-import javax.swing.JPanel;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.event.KeyListener;
+import javax.swing.*;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -76,7 +71,6 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
             this.pieceRotation = new PieceRotation(this.puits);
             this.addMouseListener(this.pieceRotation);
 
-            // Ajout du clavier uniquement pour la version 3
             if (puits.isControlesClavier()) {
                 if (this.controleClavier != null) {
                     this.removeKeyListener(this.controleClavier);
@@ -124,7 +118,6 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Fond général en gris foncé
         g.setColor(Color.DARK_GRAY);
         g.fillRect(0, 0, getWidth(), getHeight());
 
@@ -187,7 +180,7 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
             }
         }
 
-        if (puits.isJeuTermine()) {
+        if (puits.isDetectionDefaite() && puits.isJeuTermine()) {
             Graphics2D g2d = (Graphics2D) g;
             String msg = "PERDU";
             g2d.setFont(new Font("Arial", Font.BOLD, 48));
@@ -197,7 +190,7 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
             int y = getHeight() / 2;
 
             int padding = 20;
-            g2d.setColor(new Color(100, 100, 100)); // gris clair pour contraste
+            g2d.setColor(new Color(100, 100, 100));
             g2d.fillRect(x - padding, y - textHeight, textWidth + 2 * padding, textHeight + padding);
             g2d.setColor(Color.WHITE);
             g2d.drawString(msg, x, y);
