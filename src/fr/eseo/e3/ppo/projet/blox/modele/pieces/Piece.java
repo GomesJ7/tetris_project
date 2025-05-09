@@ -2,6 +2,7 @@ package fr.eseo.e3.ppo.projet.blox.modele.pieces;
 
 import fr.eseo.e3.ppo.projet.blox.modele.Element;
 import fr.eseo.e3.ppo.projet.blox.modele.Puits;
+import fr.eseo.e3.ppo.projet.blox.modele.BloxException; // 🆕 Import de l'exception
 
 public abstract class Piece {
 
@@ -19,20 +20,16 @@ public abstract class Piece {
         return this.puits;
     }
 
-    public abstract void deplacerDe(int deltaX, int deltaY) throws IllegalArgumentException;
+    // 🆕 Ajout de throws BloxException
+    public abstract void deplacerDe(int deltaX, int deltaY) throws BloxException;
 
-    public abstract void tourner(boolean sensHoraire);
+    // 🆕 Ajout de throws BloxException
+    public abstract void tourner(boolean sensHoraire) throws BloxException;
 
-    /**
-     * Renvoie l'élément de référence (par convention le premier).
-     */
     public Element getElementReference() {
         return getElements()[0];
     }
 
-    /**
-     * Vérifie si un déplacement est possible dans le puits (pas de sortie ou de collision).
-     */
     public boolean deplacementPossible(int dx, int dy) {
         for (Element e : getElements()) {
             int newX = e.getCoordonnees().getAbscisse() + dx;

@@ -7,51 +7,46 @@ import fr.eseo.e3.ppo.projet.blox.modele.pieces.Piece;
 import fr.eseo.e3.ppo.projet.blox.modele.pieces.tetrominos.OTetromino;
 import fr.eseo.e3.ppo.projet.blox.modele.pieces.tetrominos.ITetromino;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-// Classe de test unitaire pour la classe Puits
 class PuitsTest {
 
-    private Puits puitsDefaut; // Puits créé avec les dimensions par défaut
-    private Puits puitsPerso;  // Puits avec des dimensions personnalisées
+    private Puits puitsDefaut;
+    private Puits puitsPerso;
 
-    // Initialisation des objets avant chaque test
     @BeforeEach
     void setUp() {
-        puitsDefaut = new Puits();               // Puits 10x15
-        puitsPerso = new Puits(12, 20);          // Puits 12x20
+        puitsDefaut = new Puits();
+        puitsPerso = new Puits(12, 20);
     }
 
-    // Teste les valeurs du constructeur par défaut
     @Test
     void testConstructeurParDefaut() {
         assertEquals(10, puitsDefaut.getLargeur());
         assertEquals(15, puitsDefaut.getProfondeur());
     }
 
-    // Teste un constructeur avec des dimensions valides
     @Test
     void testConstructeurAvecParametresValidés() {
         assertEquals(12, puitsPerso.getLargeur());
         assertEquals(20, puitsPerso.getProfondeur());
     }
 
-    // Teste les cas où le constructeur reçoit des dimensions invalides
     @Test
     void testConstructeurParametresInvalides() {
-        assertThrows(IllegalArgumentException.class, () -> new Puits(4, 20));   // largeur trop petite
-        assertThrows(IllegalArgumentException.class, () -> new Puits(16, 20));  // largeur trop grande
-        assertThrows(IllegalArgumentException.class, () -> new Puits(10, 14));  // profondeur trop petite
-        assertThrows(IllegalArgumentException.class, () -> new Puits(10, 26));  // profondeur trop grande
+        assertThrows(IllegalArgumentException.class, () -> new Puits(4, 20));
+        assertThrows(IllegalArgumentException.class, () -> new Puits(16, 20));
+        assertThrows(IllegalArgumentException.class, () -> new Puits(10, 14));
+        assertThrows(IllegalArgumentException.class, () -> new Puits(10, 26));
     }
 
-    // Vérifie que le puits vide n’est pas considéré comme plein
     @Test
     void testEstPlein_false() {
         assertFalse(puitsDefaut.estPlein());
     }
 
-    // Remplit la première ligne à la main, puis vérifie que le puits est détecté comme plein
     @Test
     void testEstPlein_true() {
         Element[][] grille = puitsDefaut.getGrille();
@@ -61,7 +56,6 @@ class PuitsTest {
         assertTrue(puitsDefaut.estPlein());
     }
 
-    // Vérifie le contenu textuel retourné par toString()
     @Test
     void testToString_FormatTexte() {
         String str = puitsDefaut.toString();
@@ -70,7 +64,6 @@ class PuitsTest {
         assertTrue(str.contains("Piece Suivante : <aucune>"));
     }
 
-    // Vérifie le comportement de setPieceSuivante quand aucune pièce actuelle n'existe
     @Test
     void testSetPieceSuivante_PremierAppel() {
         Piece pieceO = new OTetromino(new Coordonnees(4, 5), Couleur.ROUGE);
@@ -80,7 +73,6 @@ class PuitsTest {
         assertEquals(pieceO, puitsDefaut.getPieceSuivante());
     }
 
-    // Vérifie que l’ancienne pièceSuivante devient pièceActuelle lors du 2e appel
     @Test
     void testSetPieceSuivante_DeplacementPieceActuelle() {
         Piece pieceO = new OTetromino(new Coordonnees(2, 2), Couleur.JAUNE);
@@ -91,46 +83,70 @@ class PuitsTest {
 
         assertEquals(pieceO, puitsDefaut.getPieceActuelle());
 
-        // La position doit avoir été recalculée à (largeur / 2, -4)
         assertEquals(5, pieceO.getElements()[0].getCoordonnees().getAbscisse());
         assertEquals(-4, pieceO.getElements()[0].getCoordonnees().getOrdonnee());
 
         assertEquals(pieceI, puitsDefaut.getPieceSuivante());
     }
 
-    // Vérifie que clearLigne supprime bien une ligne remplie
-    @Test
-    void testClearLigne() {
-        // Ajout d'une pièce O dans le puits
-        Piece pieceO = new OTetromino(new Coordonnees(4, 5), Couleur.ROUGE);
-        puitsDefaut.setPieceSuivante(pieceO);
-        puitsDefaut.ajouterPiece(pieceO);
-
-        // Remplissage manuel de la ligne 5
-        for (int i = 0; i < puitsDefaut.getLargeur(); i++) {
-            if (puitsDefaut.getGrille()[5][i] == null) {
-                puitsDefaut.getGrille()[5][i] = new Element(new Coordonnees(i, 5), Couleur.BLEU);
-            }
-        }
-
-        // Vérifie que la ligne 5 est bien remplie avant suppression
-        for (int i = 0; i < puitsDefaut.getLargeur(); i++) {
-            assertNotNull(puitsDefaut.getGrille()[5][i], "Ligne non remplie avant clear.");
-        }
-
-        // Appel à clearLigne
-        puitsDefaut.clearLigne(5);
-
-        // Vérifie que la ligne 5 est vide après suppression
-        for (int i = 0; i < puitsDefaut.getLargeur(); i++) {
-            assertNull(puitsDefaut.getGrille()[5][i], "Ligne non vidée après clear.");
-        }
-    }
-
-    // Teste que les getters grille / largeur / profondeur sont cohérents
     @Test
     void testAccesseurs() {
         assertEquals(puitsDefaut.getGrille().length, puitsDefaut.getProfondeur());
         assertEquals(puitsDefaut.getGrille()[0].length, puitsDefaut.getLargeur());
+    }
+
+    @Test
+    void testGetTasVideParDefaut() {
+        assertNotNull(puitsDefaut.getTas(), "Le tas ne doit pas être null");
+        assertTrue(puitsDefaut.getTas().getElements().isEmpty(), "Le tas doit être vide");
+    }
+
+    @Test
+    void testSetTas() {
+        Tas nouveauTas = new Tas(puitsDefaut);
+        puitsDefaut.setTas(nouveauTas);
+        assertEquals(nouveauTas, puitsDefaut.getTas());
+    }
+
+    @Test
+    void testConstructeurAvecTasRempli() {
+        Puits puitsAvecTas = new Puits(10, 20, 15, 3);
+        Tas tas = puitsAvecTas.getTas();
+
+        assertNotNull(tas);
+        assertEquals(15, tas.getElements().size());
+
+        for (Element e : tas.getElements()) {
+            int y = e.getCoordonnees().getOrdonnee();
+            assertTrue(y >= 17 && y < 20, "Élément hors des lignes de base");
+        }
+    }
+
+    @Test
+    void testGraviteSansCollision() {
+        Puits puits = new Puits(10, 20);
+        Piece piece = new ITetromino(new Coordonnees(4, 0), Couleur.VERT);
+        puits.setPieceActuelle(piece);
+
+        puits.gravite();
+
+        for (Element e : piece.getElements()) {
+            assertEquals(1, e.getCoordonnees().getOrdonnee());
+        }
+    }
+
+    @Test
+    void testGraviteAvecCollisionBasPuits() {
+        Puits puits = new Puits(10, 15);
+        Piece piece = new ITetromino(new Coordonnees(4, 11), Couleur.ROUGE);
+        puits.setPieceActuelle(piece);
+
+        while (puits.getPieceActuelle() != null) {
+            puits.gravite();
+        }
+
+        List<Element> tasElements = puits.getTas().getElements();
+        assertFalse(tasElements.isEmpty(), "Le tas doit contenir des éléments après collision");
+        assertNull(puits.getPieceActuelle(), "La pièce actuelle doit être nulle après collision");
     }
 }

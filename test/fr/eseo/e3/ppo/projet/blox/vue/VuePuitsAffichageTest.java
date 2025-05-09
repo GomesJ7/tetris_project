@@ -1,41 +1,28 @@
 package fr.eseo.e3.ppo.projet.blox.vue;
 
 import fr.eseo.e3.ppo.projet.blox.modele.Puits;
-import fr.eseo.e3.ppo.projet.blox.modele.pieces.Piece;
-import fr.eseo.e3.ppo.projet.blox.modele.pieces.UsineDePiece;
-import fr.eseo.e3.ppo.projet.blox.modele.Mode;
 
 import javax.swing.JFrame;
-import java.awt.BorderLayout;
 
 public class VuePuitsAffichageTest {
 
     public static void main(String[] args) {
-        // Création du puits
-        Puits puits = new Puits();
+        // Création d'un puits avec un tas généré automatiquement
+        int largeur = 10;
+        int profondeur = 20;
+        int nbElements = 50;
+        int nbLignes = 5;
 
-        // Création de la vue
+        Puits puits = new Puits(largeur, profondeur, nbElements, nbLignes);
         VuePuits vuePuits = new VuePuits(puits, 30); // taille personnalisée
-        puits.addPropertyChangeListener(vuePuits);  // 🔁 Écouteur enregistré
-
-        // Génération d’une pièce
-        UsineDePiece usine = new UsineDePiece();
-        usine.setMode(Mode.DETERMINISTE);
-        Piece piece1 = usine.genererPiece();
-        Piece piece2 = usine.genererPiece();
-
-        // Premier appel : définit pieceSuivante uniquement
-        puits.setPieceSuivante(piece1);
-
-        // Deuxième appel : piece1 devient pieceActuelle, piece2 devient la nouvelle pieceSuivante
-        puits.setPieceSuivante(piece2);
+        puits.addPropertyChangeListener(vuePuits);
 
         // Création de la fenêtre
-        JFrame frame = new JFrame("Vue du Puits avec pièce");
+        JFrame frame = new JFrame("Vue du Puits avec Tas");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(vuePuits, BorderLayout.CENTER);
-        frame.pack(); // ajuste la taille automatiquement avec getPreferredSize()
-        frame.setLocationRelativeTo(null); // centre la fenêtre
+        frame.add(vuePuits);
+        frame.pack(); // ajuste automatiquement avec getPreferredSize()
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 }

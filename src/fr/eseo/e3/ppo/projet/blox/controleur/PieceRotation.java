@@ -1,5 +1,6 @@
 package fr.eseo.e3.ppo.projet.blox.controleur;
 
+import fr.eseo.e3.ppo.projet.blox.modele.BloxException;
 import fr.eseo.e3.ppo.projet.blox.modele.Puits;
 import fr.eseo.e3.ppo.projet.blox.modele.pieces.Piece;
 
@@ -17,19 +18,19 @@ public class PieceRotation extends MouseAdapter {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        if (puits.isJeuTermine()) return; // Blocage si perdu
+
         Piece piece = puits.getPieceActuelle();
 
         if (piece != null) {
             try {
                 if (SwingUtilities.isRightMouseButton(e)) {
-                    // Sens horaire
-                    piece.tourner(true);
+                    piece.tourner(true); // Sens horaire
                 } else if (SwingUtilities.isLeftMouseButton(e)) {
-                    // Sens anti-horaire
-                    piece.tourner(false);
+                    piece.tourner(false); // Sens anti-horaire
                 }
-            } catch (IllegalArgumentException ex) {
-                // Si la rotation n’est pas possible, on ignore
+            } catch (BloxException ex) {
+                System.err.println("Erreur rotation : " + ex.getMessage());
             }
         }
     }

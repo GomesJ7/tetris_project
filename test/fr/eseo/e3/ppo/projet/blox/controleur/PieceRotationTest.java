@@ -11,28 +11,28 @@ import javax.swing.JFrame;
 public class PieceRotationTest {
 
     public static void main(String[] args) {
-        // Création du puits
+        // Crée un puits 10x20
         Puits puits = new Puits(10, 20);
 
-        // Création d'une pièce I au centre
+        // Crée une pièce ITetromino au centre
         ITetromino piece = new ITetromino(new Coordonnees(4, 1), Couleur.ROUGE);
         puits.setPieceActuelle(piece);
 
-        // Création de la vue
+        // Crée la vue
         VuePuits vuePuits = new VuePuits(puits);
-        vuePuits.setTaille(30);  // Agrandir la taille pour plus de lisibilité
+        vuePuits.setTaille(30); // taille des blocs en pixels
 
-        // Création de la fenêtre
+        // Crée la fenêtre
         JFrame fenetre = new JFrame("Test Rotation Souris");
         fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         fenetre.add(vuePuits);
 
-        // Calcul des dimensions de la fenêtre avec marges
+        // Calcule la taille de la fenêtre
         int largeurFenetre = puits.getLargeur() * vuePuits.getTaille();
         int hauteurFenetre = puits.getProfondeur() * vuePuits.getTaille();
-        fenetre.setSize(largeurFenetre + 16, hauteurFenetre + 39);
+        fenetre.setSize(largeurFenetre + 16, hauteurFenetre + 39); // marges approx.
 
-        fenetre.setLocationRelativeTo(null);  // Centrer la fenêtre
+        fenetre.setLocationRelativeTo(null); // centre l’écran
         fenetre.setVisible(true);
     }
 }

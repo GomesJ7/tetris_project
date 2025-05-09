@@ -52,23 +52,24 @@ public class VuePiece extends JPanel {
         afficherPiece(g);
     }
 
+    // Méthode standard : affichage aux coordonnées par défaut
     public void afficherPiece(Graphics g) {
-        if (piece != null) {
-            System.out.println("Affichage de la pièce : " + piece); 
-            for (Element e : piece.getElements()) {
-                Coordonnees c = e.getCoordonnees();
-                int x = c.getAbscisse();
-                int y = c.getOrdonnee();
-
-                g.setColor(Color.RED);
-                g.fillRect(x * taille, y * taille, taille, taille);
-                g.setColor(Color.BLACK);
-                g.drawRect(x * taille, y * taille, taille, taille);
-            }
-        } else {
-            System.out.println("Aucune pièce à afficher.");
-        }
+        afficherPiece(g, 0, 0);
     }
 
+    // Nouvelle méthode : affichage décalé
+    public void afficherPiece(Graphics g, int xOffset, int yOffset) {
+        if (piece != null) {
+            for (Element e : piece.getElements()) {
+                Coordonnees c = e.getCoordonnees();
+                int x = xOffset + c.getAbscisse() * taille;
+                int y = yOffset + c.getOrdonnee() * taille;
 
+                g.setColor(e.getCouleur().getCouleurPourAfficher());
+                g.fill3DRect(x, y, taille, taille, true);
+                g.setColor(Color.BLACK);
+                g.drawRect(x, y, taille, taille);
+            }
+        }
+    }
 }

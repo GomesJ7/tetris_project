@@ -1,8 +1,10 @@
 package fr.eseo.e3.ppo.projet.blox.modele.pieces.tetrominos;
 
+import fr.eseo.e3.ppo.projet.blox.modele.BloxException;
 import fr.eseo.e3.ppo.projet.blox.modele.Coordonnees;
 import fr.eseo.e3.ppo.projet.blox.modele.Couleur;
 import fr.eseo.e3.ppo.projet.blox.modele.Element;
+import fr.eseo.e3.ppo.projet.blox.modele.Puits;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,32 +42,37 @@ class OTetrominoTest {
     }
 
     @Test
-    void testDeplacerDeBas() {
+    void testDeplacerDeBas() throws BloxException {
         OTetromino tetromino = new OTetromino(new Coordonnees(4, 0), Couleur.BLEU);
+        tetromino.setPuits(new Puits(10, 20));
+
+        Coordonnees[] avant = new Coordonnees[4];
+        for (int i = 0; i < 4; i++) {
+            avant[i] = tetromino.getElements()[i].getCoordonnees();
+        }
+
         tetromino.deplacerDe(0, 1);
-        for (Element e : tetromino.getElements()) {
-            assertEquals(1, e.getCoordonnees().getOrdonnee());
+
+        for (int i = 0; i < 4; i++) {
+            Coordonnees apres = tetromino.getElements()[i].getCoordonnees();
+            assertEquals(avant[i].getAbscisse(), apres.getAbscisse(), "X ne doit pas changer");
+            assertEquals(avant[i].getOrdonnee() + 1, apres.getOrdonnee(), "Y doit augmenter de 1");
         }
     }
 
     @Test
-    void testRotationDoesNothing() {
-        OTetromino tetromino = new OTetromino(new Coordonnees(2, 3), Couleur.JAUNE);
-        // Sauvegarde de l'état initial
-        Element[] before = tetromino.getElements();
-        Coordonnees[] initialCoords = new Coordonnees[before.length];
-        for (int i = 0; i < before.length; i++) {
-            initialCoords[i] = before[i].getCoordonnees();
-        }
+    void testRotationThrowsException() {
+        OTetromino tetromino = new OTetromino(new Coordonnees(4, 0), Couleur.BLEU);
+        
+        Exception exception1 = assertThrows(UnsupportedOperationException.class, () -> {
+            tetromino.tourner(true);
+        });
+        assertEquals("L'OTetromino ne peut pas être tourné.", exception1.getMessage());
 
-        // Tentative de rotation
-        tetromino.tourner(true);
-        tetromino.tourner(false);
-
-        // Vérifie qu'aucune coordonnée n'a changé
-        Element[] after = tetromino.getElements();
-        for (int i = 0; i < after.length; i++) {
-            assertEquals(initialCoords[i], after[i].getCoordonnees(), "La rotation ne devrait pas affecter un OTetromino.");
-        }
+        Exception exception2 = assertThrows(UnsupportedOperationException.class, () -> {
+            tetromino.tourner(false);
+        });
+        assertEquals("L'OTetromino ne peut pas être tourné.", exception2.getMessage());
     }
+
 }
