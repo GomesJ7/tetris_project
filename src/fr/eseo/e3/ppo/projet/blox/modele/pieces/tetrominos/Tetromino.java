@@ -1,19 +1,37 @@
 package fr.eseo.e3.ppo.projet.blox.modele.pieces.tetrominos;
 
-import fr.eseo.e3.ppo.projet.blox.modele.BloxException; // 🆕 Exception custom
+import fr.eseo.e3.ppo.projet.blox.modele.BloxException;
 import fr.eseo.e3.ppo.projet.blox.modele.Coordonnees;
 import fr.eseo.e3.ppo.projet.blox.modele.Couleur;
 import fr.eseo.e3.ppo.projet.blox.modele.Element;
 import fr.eseo.e3.ppo.projet.blox.modele.pieces.Piece;
 
+/**
+ * Classe abstraite représentant un tétrimino générique (4 blocs).
+ * Elle fournit une implémentation commune à toutes les formes de pièces de Tetris
+ * (I, O, T, L, J, S, Z) : déplacement, rotation, positionnement.
+ *
+ * Chaque sous-classe doit définir sa forme en implémentant `setElements(...)`.
+ */
 public abstract class Tetromino extends Piece {
+
+    // Les 4 blocs de la pièce
     protected Element[] elements = new Element[4];
 
+    /**
+     * Constructeur d’un Tetromino.
+     * @param coordonnees coordonnée de base pour positionner la pièce
+     * @param couleur couleur commune aux 4 éléments
+     */
     public Tetromino(final Coordonnees coordonnees, final Couleur couleur) {
         this.elements = new Element[4];
-        setElements(coordonnees, couleur);
+        setElements(coordonnees, couleur); // Appelle la méthode spécialisée de la sous-classe
     }
 
+    /**
+     * Méthode abstraite à implémenter dans chaque sous-classe pour définir
+     * l’agencement des 4 blocs selon la forme (ex : ligne, carré, etc.).
+     */
     protected abstract void setElements(final Coordonnees coordonnees, final Couleur couleur);
 
     @Override
@@ -21,11 +39,16 @@ public abstract class Tetromino extends Piece {
         return elements;
     }
 
+    /**
+     * Repositionne toute la pièce à une nouvelle coordonnée en conservant sa forme.
+     * Le déplacement est relatif à l’élément pivot (élément[0]).
+     */
     @Override
     public void setPosition(int abscisse, int ordonnee) {
         Coordonnees ref = elements[0].getCoordonnees();
         int deltaX = abscisse - ref.getAbscisse();
         int deltaY = ordonnee - ref.getOrdonnee();
+
         for (Element e : elements) {
             Coordonnees current = e.getCoordonnees();
             int newX = current.getAbscisse() + deltaX;
@@ -44,7 +67,10 @@ public abstract class Tetromino extends Piece {
         return sb.toString();
     }
 
-    // 🆕 Maintenant lève une BloxException
+    /**
+     * Déplace la pièce dans une direction autorisée : gauche, droite, ou bas.
+     * Lève une exception en cas de sortie du puits ou collision avec le tas.
+     */
     @Override
     public void deplacerDe(int deltaX, int deltaY) throws BloxException {
         boolean deplacementValide =
@@ -56,41 +82,43 @@ public abstract class Tetromino extends Piece {
             throw new IllegalArgumentException("Déplacement invalide : seuls les déplacements gauche, droite ou bas sont autorisés.");
         }
 
+        // Vérifie la validité du déplacement pour chaque bloc
         for (Element e : elements) {
             int newX = e.getCoordonnees().getAbscisse() + deltaX;
             int newY = e.getCoordonnees().getOrdonnee() + deltaY;
 
-            // 🆕 Sortie du puits
             if (newX < 0 || newX >= puits.getLargeur()) {
                 throw new BloxException("Sortie du puits (gauche/droite)", BloxException.BLOX_SORTIE_PUITS);
             }
-
-            // 🆕 Collision avec le fond
             if (newY >= puits.getProfondeur()) {
                 throw new BloxException("Collision avec le fond du puits", BloxException.BLOX_COLLISION);
             }
-
-            // 🆕 Collision avec le tas
             if (newY >= 0 && puits.getTas().elementExiste(newX, newY)) {
                 throw new BloxException("Collision avec le tas", BloxException.BLOX_COLLISION);
             }
         }
 
-        // ✅ Si tout est OK, déplacement normal
+        // Si tout est valide, applique le déplacement
         for (Element e : elements) {
             e.deplacerDe(deltaX, deltaY);
         }
     }
 
-    // 🆕 Maintenant lève une BloxException
+    /**
+     * Effectue une rotation autour du pivot (élément[0]).
+     * Applique une transformation géométrique selon le sens.
+     *
+     * Lève une BloxException si la rotation sort du puits ou entre en collision.
+     */
     @Override
     public void tourner(boolean sensHoraire) throws BloxException {
         Coordonnees ref = elements[0].getCoordonnees();
         int xRef = ref.getAbscisse();
         int yRef = ref.getOrdonnee();
 
+        // Calcule les nouvelles coordonnées en rotation
         Coordonnees[] nouvellesCoordonnees = new Coordonnees[elements.length];
-        nouvellesCoordonnees[0] = ref;
+        nouvellesCoordonnees[0] = ref; // le pivot reste inchangé
 
         for (int i = 1; i < elements.length; i++) {
             Coordonnees c = elements[i].getCoordonnees();
@@ -109,7 +137,7 @@ public abstract class Tetromino extends Piece {
             nouvellesCoordonnees[i] = new Coordonnees(newX, newY);
         }
 
-        // 🆕 Vérification des collisions ou sorties
+        // Vérifie que toutes les nouvelles positions sont valides
         for (Coordonnees c : nouvellesCoordonnees) {
             int x = c.getAbscisse();
             int y = c.getOrdonnee();
@@ -125,7 +153,7 @@ public abstract class Tetromino extends Piece {
             }
         }
 
-        // ✅ Rotation autorisée
+        // Applique la rotation si toutes les vérifications sont passées
         for (int i = 1; i < elements.length; i++) {
             elements[i].setCoordonnees(nouvellesCoordonnees[i]);
         }

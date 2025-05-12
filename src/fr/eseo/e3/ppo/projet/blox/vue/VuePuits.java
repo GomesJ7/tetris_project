@@ -12,6 +12,11 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+/**
+ * Vue principale représentant le puits (grille de jeu).
+ * Elle dessine la grille, la pièce actuelle, le tas, les prochaines pièces et le message de défaite.
+ * Elle écoute le modèle (Puits) via PropertyChangeListener pour rester à jour.
+ */
 public class VuePuits extends JPanel implements PropertyChangeListener {
 
     public static final int TAILLE_PAR_DEFAUT = 15;
@@ -20,9 +25,12 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
     private int taille;
     private VuePiece vuePiece;
     private VueTas vueTas;
+
     private PieceDeplacement pieceDeplacement;
     private PieceRotation pieceRotation;
     private ControleClavier controleClavier;
+
+    // === Constructeurs ===
 
     public VuePuits(Puits puits) {
         this(puits, TAILLE_PAR_DEFAUT);
@@ -30,8 +38,10 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
 
     public VuePuits(Puits puits, int taille) {
         this.taille = taille;
-        this.setPuits(puits);
+        this.setPuits(puits); // initialise les composants liés au puits
     }
+
+    // === Getters / Setters ===
 
     public Puits getPuits() {
         return this.puits;
@@ -41,9 +51,24 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
         return this.vueTas;
     }
 
+    public int getTaille() {
+        return this.taille;
+    }
+
+    public void setTaille(int taille) {
+        this.taille = taille;
+        if (this.vuePiece != null) {
+            this.vuePiece.setTaille(taille);
+        }
+        repaint();
+    }
+
+    /**
+     * Méthode centrale qui configure l'affichage et les contrôles en fonction d’un puits donné.
+     */
     public void setPuits(Puits nouveauPuits) {
         if (this.puits != null) {
-            this.puits.removePropertyChangeListener(this);
+            this.puits.removePropertyChangeListener(this); // désabonnement si nécessaire
         }
 
         this.puits = nouveauPuits;
@@ -53,6 +78,7 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
             setVuePiece(this.puits.getPieceActuelle());
             this.vueTas = new VueTas(this);
 
+            // Reconfiguration des contrôleurs souris
             if (this.pieceDeplacement != null) {
                 this.removeMouseMotionListener(this.pieceDeplacement);
                 this.removeMouseListener(this.pieceDeplacement);
@@ -71,6 +97,7 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
             this.pieceRotation = new PieceRotation(this.puits);
             this.addMouseListener(this.pieceRotation);
 
+            // Clavier si activé
             if (puits.isControlesClavier()) {
                 if (this.controleClavier != null) {
                     this.removeKeyListener(this.controleClavier);
@@ -85,22 +112,13 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
         repaint();
     }
 
-    public int getTaille() {
-        return this.taille;
-    }
-
-    public void setTaille(int taille) {
-        this.taille = taille;
-        if (this.vuePiece != null) {
-            this.vuePiece.setTaille(taille);
-        }
-        repaint();
-    }
-
     private void setVuePiece(Piece piece) {
         this.vuePiece = (piece != null) ? new VuePiece(piece, taille) : null;
     }
 
+    /**
+     * Mise à jour automatique lorsque la pièce actuelle change dans le modèle.
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (Puits.MODIFICATION_PIECE_ACTUELLE.equals(evt.getPropertyName())) {
@@ -109,18 +127,26 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
         }
     }
 
+    /**
+     * Calcule la taille idéale du composant graphique (prise en compte du puits + zone de droite).
+     */
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(puits.getLargeur() * taille + 150, puits.getProfondeur() * taille);
     }
 
+    /**
+     * Méthode Swing centrale pour dessiner le contenu du puits.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        // Fond global
         g.setColor(Color.DARK_GRAY);
         g.fillRect(0, 0, getWidth(), getHeight());
 
+        // === Grille de base (éléments déposés dans le tableau) ===
         if (puits != null) {
             Element[][] grille = puits.getGrille();
             for (int y = 0; y < grille.length; y++) {
@@ -141,14 +167,17 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
             }
         }
 
+        // === Affichage du tas ===
         if (vueTas != null) {
             vueTas.afficher((Graphics2D) g);
         }
 
+        // === Affichage de la pièce actuelle ===
         if (vuePiece != null) {
             vuePiece.afficherPiece(g);
         }
 
+        // === File des pièces suivantes (mode multi-pièce) ===
         if (puits.isModeMultiPiece() && puits.getFilePiecesSuivantes() != null) {
             Graphics2D g2d = (Graphics2D) g;
             int caseTaille = taille / 2;
@@ -180,6 +209,7 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
             }
         }
 
+        // === Affichage du message de défaite ===
         if (puits.isDetectionDefaite() && puits.isJeuTermine()) {
             Graphics2D g2d = (Graphics2D) g;
             String msg = "PERDU";
@@ -190,7 +220,7 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
             int y = getHeight() / 2;
 
             int padding = 20;
-            g2d.setColor(new Color(100, 100, 100));
+            g2d.setColor(new Color(100, 100, 100)); // fond du message
             g2d.fillRect(x - padding, y - textHeight, textWidth + 2 * padding, textHeight + padding);
             g2d.setColor(Color.WHITE);
             g2d.drawString(msg, x, y);

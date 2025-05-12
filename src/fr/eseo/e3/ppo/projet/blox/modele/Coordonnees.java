@@ -1,17 +1,33 @@
 package fr.eseo.e3.ppo.projet.blox.modele;
 
+/**
+ * Classe utilitaire représentant une paire de coordonnées (x, y) dans la grille du jeu.
+ * Cette classe est un composant fondamental du modèle, utilisée pour positionner les éléments.
+ *
+ * Elle illustre l'encapsulation, la redéfinition de méthodes fondamentales (equals, hashCode, toString)
+ * et des pratiques courantes dans la modélisation d’objets simples mais essentiels.
+ */
 public class Coordonnees {
 
-    private int abscisse;
-    private int ordonnee;
+    // === Attributs encapsulés ===
 
-    // Constructeur pour initialiser les coordonnées
+    private int abscisse;   // Coordonnée en X
+    private int ordonnee;   // Coordonnée en Y
+
+    // === Constructeur ===
+
+    /**
+     * Initialise les coordonnées avec les valeurs données.
+     * @param abscisse coordonnée horizontale
+     * @param ordonnee coordonnée verticale
+     */
     public Coordonnees(int abscisse, int ordonnee) {
         this.abscisse = abscisse;
         this.ordonnee = ordonnee;
     }
 
-    // Getters et setters pour abscisse et ordonnee
+    // === Accesseurs (getters) et mutateurs (setters) ===
+
     public int getAbscisse() {
         return abscisse;
     }
@@ -28,33 +44,36 @@ public class Coordonnees {
         this.ordonnee = ordonnee;
     }
 
-    // Retourne une chaîne sous la forme "(abscisse, ordonnee)"
+    // === Méthodes redéfinies d'Object ===
+
+    /**
+     * Affiche les coordonnées sous la forme (x, y)
+     */
     @Override
     public String toString() {
         return "(" + this.abscisse + ", " + this.ordonnee + ")";
     }
 
-
+    /**
+     * Vérifie l'égalité entre deux objets Coordonnees.
+     * L'égalité repose sur l'égalité des deux champs abscisse et ordonnee.
+     */
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {  // Si l'objet à comparer est nul, ce n'est pas le même
+        if (obj == null) return false;        // null n’est jamais égal
+        if (obj == this) return true;         // même référence → égal
+        if (!(obj instanceof Coordonnees))    // pas le bon type
             return false;
-        }
-        if (obj == this) {  // Si l'objet est exactement le même (même référence en mémoire)
-            return true;
-        }
-        // On vérifie que l'objet est bien une instance de Coordonnees
-        if (!(obj instanceof Coordonnees)) {
-            return false;  // Si l'objet n'est pas de type Coordonnees, ce n'est pas égal
-        }
-        // Convertit l'objet en Coordonnees et compare les valeurs
-        Coordonnees other = (Coordonnees) obj; 
-        return abscisse == other.abscisse && ordonnee == other.ordonnee;  // Les deux objets sont égaux si abscisse et ordonnee sont égaux
+        Coordonnees other = (Coordonnees) obj;
+        return abscisse == other.abscisse && ordonnee == other.ordonnee;
     }
 
-    // Calcule un code de hachage simple basé sur abscisse et ordonnee
+    /**
+     * Code de hachage cohérent avec equals() pour fonctionner dans les HashSet / HashMap.
+     * Le 31 est un multiplicateur standard pour éviter les collisions (meilleure répartition).
+     */
     @Override
     public int hashCode() {
-        return 31 * abscisse + ordonnee; // Retourne la somme de abscisse et ordonnee comme un simple code de hachage
-    }	//on utilise 31 comme facteur multiplicatif pour éviter que les code de hash soit les mêmes par exemple pour (1,4) et (4,1)
+        return 31 * abscisse + ordonnee;
+    }
 }

@@ -1,5 +1,6 @@
 package fr.eseo.e3.ppo.projet.blox;
 
+// Importations des classes nécessaires
 import fr.eseo.e3.ppo.projet.blox.controleur.Gravite;
 import fr.eseo.e3.ppo.projet.blox.modele.pieces.UsineDePiece;
 import fr.eseo.e3.ppo.projet.blox.modele.Puits;
@@ -9,17 +10,28 @@ import fr.eseo.e3.ppo.projet.blox.vue.VuePuits;
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
 
+/**
+ * Classe représentant la première version fonctionnelle de FallingBlox.
+ * Ce fichier constitue une démonstration basique du jeu avec :
+ * - affichage graphique du puits
+ * - panneau d'information
+ * - génération d’une pièce
+ * - lancement automatique de la gravité
+ *
+ * Cette version montre bien la séparation des responsabilités entre le modèle, la vue et le contrôleur.
+ */
 public class FallingBloxVersion1 {
 
     public static void main(String[] args) {
         Puits puits;
 
-        // Gestion des arguments
+        // === Traitement des arguments d'entrée ===
+        // Encapsulation de la logique d'initialisation selon le nombre d’éléments souhaités
         if (args.length == 0) {
-            puits = new Puits(); // Par défaut
+            puits = new Puits(); // Appelle le constructeur par défaut
         } else if (args.length == 1) {
             int nbElements = Integer.parseInt(args[0]);
-            int nbLignes = nbElements / 10 + 1;
+            int nbLignes = nbElements / 10 + 1; // estimation automatique
             puits = new Puits(10, 20, nbElements, nbLignes);
         } else {
             int nbElements = Integer.parseInt(args[0]);
@@ -27,27 +39,33 @@ public class FallingBloxVersion1 {
             puits = new Puits(10, 20, nbElements, nbLignes);
         }
 
-        // Création des vues
-        VuePuits vuePuits = new VuePuits(puits, 30); // taille de la grille
+        // === Création des vues (MVC) ===
+        // Vue principale du puits avec un facteur d’échelle
+        VuePuits vuePuits = new VuePuits(puits, 30);
+
+        // Panneau latéral affichant des infos sur la partie
         PanneauInformation panneauInfo = new PanneauInformation(puits);
 
-        // Fenêtre principale
+        // === Initialisation de la fenêtre graphique ===
         JFrame frame = new JFrame("Falling Blox");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
-        frame.add(vuePuits, BorderLayout.CENTER);
-        frame.add(panneauInfo, BorderLayout.EAST);
+        frame.add(vuePuits, BorderLayout.CENTER);      // Vue principale au centre
+        frame.add(panneauInfo, BorderLayout.EAST);     // Infos à droite
 
-        frame.pack(); // ajustement de la taille
-        frame.setResizable(false);
-        frame.setLocationRelativeTo(null); // centrer la fenêtre
-        
-        puits.setPieceSuivante(new UsineDePiece().genererPiece());
-        puits.setPieceSuivante(new UsineDePiece().genererPiece());
-        // Démarrage de la gravité automatique
-        new Gravite(vuePuits, puits, 500);
+        frame.pack();                  // Ajustement automatique de la taille
+        frame.setResizable(false);     // Empêche le redimensionnement
+        frame.setLocationRelativeTo(null); // Centre la fenêtre à l’écran
 
-        frame.setVisible(true);
+        // === Initialisation des pièces ===
+        puits.setPieceSuivante(new UsineDePiece().genererPiece()); // première pièce ignorée
+        puits.setPieceSuivante(new UsineDePiece().genererPiece()); // pièce active réellement jouée
+
+        // === Démarrage de la gravité automatique ===
+        // Ce composant suit le pattern "contrôleur" dans le modèle MVC
+        new Gravite(vuePuits, puits, 500); // gravité toutes les 500ms
+
+        frame.setVisible(true); // affichage final de la fenêtre
     }
 }

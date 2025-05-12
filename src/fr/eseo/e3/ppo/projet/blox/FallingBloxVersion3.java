@@ -7,30 +7,44 @@ import fr.eseo.e3.ppo.projet.blox.controleur.Gravite;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+/**
+ * Classe de lancement de la version 3 du jeu FallingBlox.
+ * Cette version introduit des extensions importantes :
+ * - Affichage d’une file de pièces (multiPiece)
+ * - Gestion de la défaite (empilement jusqu'en haut)
+ * - Contrôles clavier (déplacement et rotation)
+ *
+ * L’architecture MVC est conservée, mais enrichie avec des comportements supplémentaires
+ * activés via le constructeur du modèle (Puits).
+ */
 public class FallingBloxVersion3 {
 
     public static void main(String[] args) {
+        // Utilisation du thread de l’EDT (bonne pratique Swing)
         SwingUtilities.invokeLater(() -> {
-            // Création du modèle avec extensions activées
-            Puits puits = new Puits(10, 20, true, true, true); // multiPiece, defaite, clavier
+            // === Modèle ===
+            // Création du puits avec des fonctionnalités activables :
+            // multiPiece = true, defaite = true, clavier = true
+            Puits puits = new Puits(10, 20, true, true, true);
 
-            // Initialisation des pièces
+            // Initialise la file de pièces (nouvelle fonctionnalité)
             puits.initialiserFilePieces();
-            puits.avancerFilePieces();
+            puits.avancerFilePieces(); // place la première pièce dans le jeu
 
-            // Création de la vue
-            VuePuits vuePuits = new VuePuits(puits, 25);
+            // === Vue ===
+            VuePuits vuePuits = new VuePuits(puits, 25); // facteur de taille réduit ici
 
-            // Création de la fenêtre
+            // === Fenêtre principale ===
             JFrame fenetre = new JFrame("FallingBlox - Version 3");
             fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             fenetre.setContentPane(vuePuits);
             fenetre.pack();
-            fenetre.setLocationRelativeTo(null);
+            fenetre.setLocationRelativeTo(null); // centre la fenêtre
             fenetre.setVisible(true);
 
-            // Démarrage de la gravité automatique (toutes les 500 ms)
-            Gravite gravite = new Gravite(vuePuits, puits, 900);
+            // === Contrôleur ===
+            // Démarrage de la gravité automatique (nouvelle instance de Gravite)
+            Gravite gravite = new Gravite(vuePuits, puits, 900); // cadence plus lente
         });
     }
 }

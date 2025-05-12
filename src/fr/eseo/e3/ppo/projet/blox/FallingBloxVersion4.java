@@ -1,16 +1,27 @@
 package fr.eseo.e3.ppo.projet.blox;
 
+// Importation du contrôleur, modèle et vue spécifique à la V4
 import fr.eseo.e3.ppo.projet.blox.controleur.Gravite;
 import fr.eseo.e3.ppo.projet.blox.modele.Puits;
 import fr.eseo.e3.ppo.projet.blox.vue.VuePuitsV4;
 
 import javax.swing.*;
 
+/**
+ * Classe de lancement de la version 4 de FallingBlox.
+ * Cette version introduit la sélection de difficulté (ajustement du délai de gravité)
+ * en plus des fonctionnalités de la version 3 :
+ * - affichage multi-pièces
+ * - détection de défaite
+ * - contrôle clavier
+ */
 public class FallingBloxVersion4 {
 
     public static void main(String[] args) {
-        // Détermination du délai de gravité selon la difficulté
-        int delai = 1000; // Normal par défaut
+        // === Paramétrage dynamique de la difficulté ===
+        int delai = 1000; // valeur par défaut (normal)
+
+        // Lecture d’un argument éventuel (passé depuis le menu de démarrage)
         if (args.length > 0) {
             switch (args[0]) {
                 case "Facile":
@@ -26,23 +37,29 @@ public class FallingBloxVersion4 {
             }
         }
 
-        // Initialisation du puits avec les options de la V4
+        // === Initialisation du modèle (Puits) ===
+        // Les trois booléens activent :
+        // - la file de pièces (multiPiece)
+        // - la détection de défaite (defaite)
+        // - les contrôles clavier (clavier)
         Puits puits = new Puits(10, 20, true, true, true);
         puits.initialiserFilePieces();
-        puits.avancerFilePieces();
+        puits.avancerFilePieces(); // met la première pièce en jeu
 
-        // Création de la vue
-        VuePuitsV4 vuePuits = new VuePuitsV4(puits, 30); // Taille des cases ajustable
+        // === Vue personnalisée pour la version 4 ===
+        // Vue enrichie avec les ajouts visuels spécifiques (par ex. file de pièces visibles ?)
+        VuePuitsV4 vuePuits = new VuePuitsV4(puits, 30); // taille de case ajustée
 
-        // Ajout de la gravité
+        // === Contrôleur ===
+        // La gravité automatique utilise le délai adapté à la difficulté choisie
         new Gravite(vuePuits, puits, delai);
 
-        // Création de la fenêtre
+        // === Interface graphique Swing ===
         JFrame fenetre = new JFrame("FallingBlox - Version 4");
         fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         fenetre.setContentPane(vuePuits);
-        fenetre.pack();
-        fenetre.setLocationRelativeTo(null);
-        fenetre.setVisible(true);
+        fenetre.pack(); // ajuste automatiquement la taille
+        fenetre.setLocationRelativeTo(null); // centre la fenêtre
+        fenetre.setVisible(true); // affiche la fenêtre
     }
 }
